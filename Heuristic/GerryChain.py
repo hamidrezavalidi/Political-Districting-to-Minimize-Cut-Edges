@@ -4,6 +4,8 @@ from gerrychain import (GeographicPartition, Partition, Graph, MarkovChain, prop
 from gerrychain.proposals import recom
 from functools import partial
 
+import networkx as nx
+
 #from gerrychain.metrics import efficiency_gap, mean_median
 #from gerrychain.proposals import propose_random_flip
 #from gerrychain.updaters import cut_edges
@@ -13,6 +15,7 @@ import geopandas as gpd
 import matplotlib.pyplot as plt
 
 import json
+
 
 state_codes = {
     'WA': '53', 'DE': '10', 'WI': '55', 'WV': '54', 'HI': '15',
@@ -100,15 +103,15 @@ def run_GerryChain_heuristic(G,population_deviation,k,iterations):
 
 
 if land_parcel == 'county':
-    heuristic_iterations = 2000
+    heuristic_iterations = 10000
 elif land_parcel == 'tract':
     heuristic_iterations = 10000
 else: print("Error: land parcel is not valid!")    
 
-weighted = True
+weighted = False
 
 for state in state_codes.keys():
-    if state == 'ID':
+    if state == 'MS':
             fn = "heur_"+state+"_"+land_parcel 
             if weighted:
                  fn += "_weighted"
@@ -119,10 +122,14 @@ for state in state_codes.keys():
              
             
             k = congressional_districts[state]
+            #k = 17
+            #population_deviation = 0.1
             population_deviation = 0.01
             state_code = state_codes[state]
             
             G = Graph.from_json("C:/data/Your-State/"+land_parcel+"/dual_graphs/"+land_parcel+state_code+".json")
+
+            #G = nx.convert_node_labels_to_integers(F, first_label=0, ordering='default', label_attribute=None)
             
             set_edge_lengths(G, weighted)
             
@@ -140,7 +147,12 @@ for state in state_codes.keys():
             df['heuristic']= -1
             for j in range(k):
                 for i in heur_districts[j]:
+                    geoID = G.node[i]["GEOID10"]
+                    for u in G.nodes:
+                        if geoID == df['GEOID10'][u]:
+                            df['heuristic'][u] = j
                     df['heuristic'][i] = j
+                           
             
             hplot = df.plot(column='heuristic',figsize=(10, 10)).get_figure()
             plt.axis('off')
@@ -158,7 +170,9 @@ for state in state_codes.keys():
                 data['nodes'] = []
                 #textFile.write(str(heur_obj)+" "+str(round(stop-start,2))+"\n")
                 for j in range(k):
+                    #print("district: ", j)
                     for i in heur_districts[j]:
+                        #print("county: ", G.node[i]["NAME10"])
                         data['nodes'].append({
                                 'name': G.node[i]["NAME10"],
                                 'index': i,
@@ -167,5 +181,3 @@ for state in state_codes.keys():
                         #L = [str(i)," ",str(j),"\n"]
                         #textFile.writelines(L)
                 json.dump(data, outfile)
-            
-    
