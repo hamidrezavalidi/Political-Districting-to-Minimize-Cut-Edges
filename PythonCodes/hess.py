@@ -78,18 +78,20 @@ def build_hess_model(m, population, L, U, k):
     m.addConstrs(gp.quicksum(population[i] * m._X[i,j] for i in DG.nodes) >= L * m._X[j,j] for j in DG.nodes)
     
     # Add coupling inequalities for added model strength
-    m.addConstrs(m._X[i,j] <= m._X[j,j] for i in DG.nodes for j in DG.nodes)
-    #couplingConstr = m.addConstrs(m._X[i,j] <= m._X[j,j] for i in DG.nodes for j in DG.nodes)
+    #m.addConstrs(m._X[i,j] <= m._X[j,j] for i in DG.nodes for j in DG.nodes)
+    couplingConstr = m.addConstrs(m._X[i,j] <= m._X[j,j] for i in DG.nodes for j in DG.nodes)
     
     # Madke them user cuts
-    #for i in DG.nodes:
-     #   for j in DG.nodes:
-      #      couplingConstr[i,j].Lazy = -1
+    for i in DG.nodes:
+        for j in DG.nodes:
+            couplingConstr[i,j].Lazy = -1
     
     #m.update()
     # Set branch priority on center vars
     for j in DG.nodes:
-        m._X[j,j].BranchPriority=1    
+        m._X[j,j].BranchPriority=1  
+        
+    m.update()    
         
         
 def build_scf_model(m,G,DG,population):

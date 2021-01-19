@@ -234,5 +234,5 @@ def build_base_hess_model(m, G, population, L, U, k, heur_districts, ordered_ver
         m._row.append("not optimal")    
         
     m._row.append(round(mip_stop-mip_start,2))
-    
+    m.update()
     return m._row            

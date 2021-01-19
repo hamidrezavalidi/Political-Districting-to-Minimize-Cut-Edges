@@ -61,7 +61,7 @@ epsg_codes = {
     'VA': '3685', 'WA': '3689', 'WV': '3693', 'WI': '3695', 'WY': '3703',
 }
 
-land_parcel = 'tract'
+land_parcel = 'county'
 
 hess_models = {'lcut'}
 
@@ -83,7 +83,7 @@ def set_edge_lengths(G, weighted):
             G[i][j]['edge_length'] = 1
             
 
-base = "labeling"
+base = "hess"
 # weight of objective coefficients
 weighted = False     # weight the edges based on border lengths
 
@@ -93,7 +93,7 @@ extended = True      # use stronger (but larger) extended model to capture objec
 
 
 # order-choice for finding an ordering
-OrderChoice = "heur_ordering"  # How to order the vertices? 
+OrderChoice = "S_decreasing"  # How to order the vertices? 
     # none: no particular ordering; use whatever order is given when graph is read
     # S : at the back of the ordering, place a maximum cardinality subset S of vertices such that every component of G[S] has population less than L
     # increasing_population : order the vertices by increasing population
@@ -363,7 +363,7 @@ with open(fn, 'w', newline='') as csvfile:
                     row = build_cut_edges(state,base,model,weighted,extended,OrderChoice,all_optima,optima_limit,symmetry) + [model]
                     #row = build_cut_edges(state,base,model,weighted,extended,OrderChoice,all_optima,optima_limit,symmetry)
                     print(row)
-                    #csvwriter.writerow(row)
+                    csvwriter.writerow(row)
             elif base == 'labeling':
                 for model in labeling_models:
                     row = build_cut_edges(state,base,model,weighted,extended,OrderChoice,all_optima,optima_limit,symmetry) + [model]
