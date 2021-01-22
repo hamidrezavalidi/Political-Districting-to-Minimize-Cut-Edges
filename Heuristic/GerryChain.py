@@ -4,6 +4,8 @@ from gerrychain import (GeographicPartition, Partition, Graph, MarkovChain, prop
 from gerrychain.proposals import recom
 from functools import partial
 
+import networkx as nx
+
 #from gerrychain.metrics import efficiency_gap, mean_median
 #from gerrychain.proposals import propose_random_flip
 #from gerrychain.updaters import cut_edges
@@ -12,7 +14,10 @@ from gerrychain.tree import recursive_tree_part
 import geopandas as gpd
 import matplotlib.pyplot as plt
 
+from matplotlib.colors import LinearSegmentedColormap
+
 import json
+
 
 state_codes = {
     'WA': '53', 'DE': '10', 'WI': '55', 'WV': '54', 'HI': '15',
@@ -48,7 +53,7 @@ def set_edge_lengths(G, weighted):
             G[i][j]['edge_length'] = 1
             
             
-land_parcel = 'county'            
+land_parcel = 'tract'            
             
 #weighted = False     # weight the edges based on border lengths
 
@@ -100,29 +105,37 @@ def run_GerryChain_heuristic(G,population_deviation,k,iterations):
 
 
 if land_parcel == 'county':
-    heuristic_iterations = 2000
-elif land_parcel == 'tract':
     heuristic_iterations = 10000
+elif land_parcel == 'tract':
+    heuristic_iterations = 100
 else: print("Error: land parcel is not valid!")    
 
-weighted = True
+weighted = False
 
 for state in state_codes.keys():
-    if state == 'ID':
+    if state == 'UT' or state == 'MS' or state == 'AR' or state == 'NV':
+    #if state == 'MS':
+    #if state == 'OK' or state == 'AL' or state == 'NE' or state == 'AR' or state == 'ID' or state == 'WV' or state == 'NM' or state == 'MS':
+    #if state == 'OK' or state == 'AL' or state == 'NE' or state == 'AR' or state == 'KS' or state == 'IA' or state == 'ID' or state == 'MS':
+    #if state == 'OK' or state == 'AL' or state == 'AR' or state == 'KS' or state == 'IA' or state == 'ID' or state == 'MS':  
+    #if state == 'OK' or state == 'KS' or state == 'MS':
+    #if state == 'NH' or state == 'ID' or state == 'ME' or state == 'WV' or state == 'NM' or state == 'NE':
             fn = "heur_"+state+"_"+land_parcel 
             if weighted:
                  fn += "_weighted"
             fn += ".json"
-             
-             
+                        
             start = time.time()
-             
-            
+                        
             k = congressional_districts[state]
+            #k = 17
+            #population_deviation = 0.1
             population_deviation = 0.01
             state_code = state_codes[state]
             
             G = Graph.from_json("C:/data/Your-State/"+land_parcel+"/dual_graphs/"+land_parcel+state_code+".json")
+
+            #G = nx.convert_node_labels_to_integers(F, first_label=0, ordering='default', label_attribute=None)
             
             set_edge_lengths(G, weighted)
             
@@ -140,7 +153,19 @@ for state in state_codes.keys():
             df['heuristic']= -1
             for j in range(k):
                 for i in heur_districts[j]:
-                    df['heuristic'][i] = j
+                    geoID = G.node[i]["GEOID10"]
+                    for u in G.nodes:
+                        if geoID == df['GEOID10'][u]:
+                            df['heuristic'][u] = j
+            
+            '''               
+            cmap = LinearSegmentedColormap.from_list('heuristic', [(0, 'blue'), (0.5, 'yellow'), (1, 'green')])    
+            #colors = ['grey', 'white']  
+            
+            splot = df.plot(cmap=cmap, column='heuristic',figsize=(10, 10), linewidth=1, edgecolor='0.25').get_figure()  # display the S map
+            plt.axis('off')
+            splot.savefig("heur_"+state+"_"+land_parcel+".png")
+            '''
             
             hplot = df.plot(column='heuristic',figsize=(10, 10)).get_figure()
             plt.axis('off')
@@ -158,7 +183,9 @@ for state in state_codes.keys():
                 data['nodes'] = []
                 #textFile.write(str(heur_obj)+" "+str(round(stop-start,2))+"\n")
                 for j in range(k):
+                    #print("district: ", j)
                     for i in heur_districts[j]:
+                        #print("county: ", G.node[i]["NAME10"])
                         data['nodes'].append({
                                 'name': G.node[i]["NAME10"],
                                 'index': i,
@@ -167,5 +194,3 @@ for state in state_codes.keys():
                         #L = [str(i)," ",str(j),"\n"]
                         #textFile.writelines(L)
                 json.dump(data, outfile)
-            
-    
