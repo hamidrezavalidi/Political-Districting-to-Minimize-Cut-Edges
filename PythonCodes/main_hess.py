@@ -210,24 +210,24 @@ def build_base_hess_model(m, G, population, L, U, k, heur_districts, ordered_ver
                     if m._X[j,j].Xn>0.5:
                         centers.append(j)
                 districts = [[i for i in DG.nodes if m._X[i,j].Xn > 0.5] for j in centers]
-                print("districts=",districts)
+                #print("districts=",districts)
             
                 
-                print("data frame: ", m._df)
+                #print("data frame: ", m._df)
                 for d in range(len(districts)):
                     for v in districts[d]:
                         geoID = G.node[v]["GEOID10"]
-                        print("geoID: ", geoID)
+                        #print("geoID: ", geoID)
                         for u in G.nodes:
                             if geoID == m._df['GEOID10'][u]:
-                                print("Here we got it! It is ", u)
+                                #print("Here we got it! It is ", u)
                                 m._df['district'][u] = d
             
                 # display the districting map 
                 oplot = m._df.plot(column='district',figsize=(10, 10), linewidth=1, edgecolor='black').get_figure()
                 plt.axis('off')
                 #oplot = m._df.plot(column='district').get_figure()
-                oplot.savefig(m._state+"_"+m._model+"_opt"+sol+".png")
+                oplot.savefig(m._state+"_"+m._model+"_opt"+str(sol)+".png")
                 
              
     else:

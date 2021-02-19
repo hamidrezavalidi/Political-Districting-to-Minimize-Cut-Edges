@@ -125,7 +125,7 @@ def build_base_labeling_model(m, G, population, L, U, k, heur_districts, ordered
     #m.params.OutputFlag = 0
     m.params.LogToConsole = 0
     m.params.LogFile='opt_'+m._state+'_'+m._model+'.log'
-    #m.Params.timeLimit=3600
+    m.Params.timeLimit=60
     
     if m._model=="shir":
         labeling.build_shir_model(m,DG,k,ordered_vertices,orbitope)
@@ -197,7 +197,7 @@ def build_base_labeling_model(m, G, population, L, U, k, heur_districts, ordered
                 # display the districting map 
                 oplot = m._df.plot(column='district',figsize=(10, 10), linewidth=1, edgecolor='black').get_figure()
                 plt.axis('off')
-                oplot.savefig(m._state+"_"+m._model+"_opt"+sol+".png")
+                oplot.savefig(m._state+"_"+m._model+"_opt"+".png")
                 
     else:
         m._row.append("not optimal")    

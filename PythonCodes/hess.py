@@ -9,7 +9,8 @@ def add_cut_edges_objective(m, G):
     m._Y = m.addVars(G.edges, vtype=GRB.BINARY)
     for i,j in G.edges:
         m.addConstrs( m._X[i,v]-m._X[j,v] <= m._Y[i,j] for v in G.nodes)
-        #m.addConstrs( m._X[j,v]-m._X[i,v] <= m._Y[i,j] for v in G.nodes)
+        m.addConstrs( m._X[j,v]-m._X[i,v] <= m._Y[i,j] for v in G.nodes)
+        m.addConstrs( m._X[j,v]+m._X[i,v]+m._Y[i,j] <= 2 for v in G.nodes)
     m.setObjective( gp.quicksum(G[i][j]['edge_length']*m._Y[i,j] for i,j in G.edges), GRB.MINIMIZE )
     
 

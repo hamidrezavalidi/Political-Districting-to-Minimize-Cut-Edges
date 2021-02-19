@@ -61,7 +61,7 @@ epsg_codes = {
     'VA': '3685', 'WA': '3689', 'WV': '3693', 'WI': '3695', 'WY': '3703',
 }
 
-land_parcel = 'county'
+land_parcel = 'tract'
 
 hess_models = {'lcut'}
 
@@ -83,7 +83,7 @@ def set_edge_lengths(G, weighted):
             G[i][j]['edge_length'] = 1
             
 
-base = "hess"
+base = "labeling"
 # weight of objective coefficients
 weighted = False     # weight the edges based on border lengths
 
@@ -249,7 +249,7 @@ def build_cut_edges(state,base,model,weighted,extended,OrderChoice,all_optima,op
     ###########################    
            
     order_start = time.time()  
-    (ordered_vertices,S) = ordering.find_ordering(G, population, L, heur, k, OrderChoice, state)
+    (ordered_vertices,S) = ordering.find_ordering(G, population, L, heur, k, OrderChoice, state, land_parcel)
     position = ordering.construct_position(ordered_vertices)
     order_stop = time.time()    
     
@@ -257,12 +257,14 @@ def build_cut_edges(state,base,model,weighted,extended,OrderChoice,all_optima,op
     
     m._row.append(len(S))
     m._row.append(round(order_stop-order_start,2))
-    m._df['color'] = -1
+    #m._df['color'] = -1
     #m._df['label'] = -1
     #colors = []
     if S!=[]:
         #print("S=",S)
         m._df['S']= -1  # create a new column for S
+        #for i in G.nodes:
+         #   m._df['S'][i] = -1
         for i in G.nodes:
             #m._df['label'][i] = i
             if i in S:
@@ -285,7 +287,10 @@ def build_cut_edges(state,base,model,weighted,extended,OrderChoice,all_optima,op
         
         splot = m._df.plot(cmap=cmap, column='S',figsize=(10, 10), linewidth=1, edgecolor='0.25').get_figure()  # display the S map
         plt.axis('off')
-        splot.savefig(state+"_S.png")
+        if land_parcel == "county":
+            splot.savefig(state+"_S_county.png")
+        elif land_parcel == "tract":
+            splot.savefig(state+"_S_tract.png")
         
         '''
         new_ordering = []
@@ -309,7 +314,7 @@ def build_cut_edges(state,base,model,weighted,extended,OrderChoice,all_optima,op
     if m._all_optima==True:
         m.Params.PoolSearchMode=2 # find n best solutions
         m.Params.PoolSolutions=optima_limit # n = 1,000
-        m.Params.PoolGap=0.001 # only find solutions within 0.1% of optimal (if opt<1000, this returns only optimal solutions)
+        m.Params.PoolGap=0.1 # only find solutions within 0.1% of optimal (if opt<1000, this returns only optimal solutions)
     
     
     ############################
@@ -355,13 +360,15 @@ with open(fn, 'w', newline='') as csvfile:
     csvwriter.writerow(fields)
     
     for state in state_codes.keys():
-        if state == 'NM':
+        #if state == 'UT' or state == 'MS' or state == 'AR' or state == 'NV':
+        if state == 'UT':
+        #if state == 'ME' or state == 'LA':
         #if state == 'NH' or state == 'ID' or state == 'ME' or state == 'WV' or state == 'NM' or state == 'NE':
-        #if state == 'OK' or state == 'AL' or state == 'NE' or state == 'AR' or state == 'KS' or state == 'IA' or state == 'ID' or state == 'WV' or state == 'NM':
+        #if state == 'ME' or state == 'LA' or state == 'OK' or state == 'AL' or state == 'NE' or state == 'AR' or state == 'KS' or state == 'IA' or state == 'ID' or state == 'WV' or state == 'NM' or state == 'MS':
             if base == 'hess':
                 for model in hess_models:
+                    #row = build_cut_edges(state,base,model,weighted,extended,OrderChoice,all_optima,optima_limit,symmetry) + [model]
                     row = build_cut_edges(state,base,model,weighted,extended,OrderChoice,all_optima,optima_limit,symmetry) + [model]
-                    #row = build_cut_edges(state,base,model,weighted,extended,OrderChoice,all_optima,optima_limit,symmetry)
                     print(row)
                     csvwriter.writerow(row)
             elif base == 'labeling':
