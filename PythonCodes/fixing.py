@@ -167,14 +167,24 @@ def do_labeling_UFixing(m,G,population,U,ordering,k):
                 UFixed += 1
     '''
 def do_labeling_LFixing(m,G,population,L,ordering,k):
-    count_fixed = 0
-    S = [True for v in G.nodes]
+    LFixed = 0
     for v in ordering:
-        if reachable_population(G, population, S, v) < L:
-            #print("This is the root being zero:", v)
+        if v in m._S:
             for j in range(k):
                 m._R[v,j].UB=0
-                count_fixed += 1
-        S[v]=False
-    print("Number of LFixings =",count_fixed,"out of", G.number_of_nodes()*k)
-    return count_fixed 
+                LFixed += 1
+    
+    # fix more r vars        
+    size_of_S = len(m._S)
+    # remove last size_of_S elements 
+    ordering_minus_S = ordering[: len(ordering) - size_of_S] 
+    # reverse ordering_minus_S
+    ordering_minus_S.reverse()
+    for j in range(k):
+        v = ordering_minus_S[j]
+        for i in range(k-j-1):
+            m._R[v,i].UB=0
+            LFixed += 1
+
+    print("Number of LFixings =",LFixed,"out of", G.number_of_nodes()*k)
+    return LFixed 

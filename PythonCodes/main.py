@@ -247,50 +247,55 @@ def build_cut_edges(state,base,model,weighted,extended,OrderChoice,all_optima,op
     ###########################
     # Ordering
     ###########################    
-           
-    order_start = time.time()  
-    (ordered_vertices,S) = ordering.find_ordering(G, population, L, heur, k, OrderChoice, state, land_parcel)
-    position = ordering.construct_position(ordered_vertices)
-    order_stop = time.time()    
-    
-    m._S = S
-    
-    m._row.append(len(S))
-    m._row.append(round(order_stop-order_start,2))
-    #m._df['color'] = -1
-    #m._df['label'] = -1
-    #colors = []
-    if S!=[]:
-        #print("S=",S)
-        m._df['S']= -1  # create a new column for S
-        #for i in G.nodes:
-         #   m._df['S'][i] = -1
-        for i in G.nodes:
-            #m._df['label'][i] = i
-            if i in S:
-                geoID = G.node[i]["GEOID10"]
-                for u in G.nodes:
-                    if geoID == m._df['GEOID10'][u]:
-                        m._df['S'][u] = 0
-                #m._df['S'][i] = 0
-                #colors.append('white')
-            else:
-                #print("non_S: ", i)
-                geoID = G.node[i]["GEOID10"]
-                for u in G.nodes:
-                    if geoID == m._df['GEOID10'][u]:
-                        m._df['S'][u] = 1
-                #m._df['S'][i] = 1
-                #colors.append('grey')
-        cmap = LinearSegmentedColormap.from_list('S', [(0, 'white'), (1, 'lightgray')])    
-        #colors = ['grey', 'white']  
+    if OrderChoice!= "None":       
+        order_start = time.time()  
+        (ordered_vertices,S) = ordering.find_ordering(G, population, L, heur, k, OrderChoice, state, land_parcel)
+        position = ordering.construct_position(ordered_vertices)
+        order_stop = time.time()    
         
-        splot = m._df.plot(cmap=cmap, column='S',figsize=(10, 10), linewidth=1, edgecolor='0.25').get_figure()  # display the S map
-        plt.axis('off')
-        if land_parcel == "county":
-            splot.savefig(state+"_S_county.png")
-        elif land_parcel == "tract":
-            splot.savefig(state+"_S_tract.png")
+        m._S = S
+        
+        m._row.append(len(S))
+        m._row.append(round(order_stop-order_start,2))
+        #m._df['color'] = -1
+        #m._df['label'] = -1
+        #colors = []
+        if S!=[]:
+            #print("S=",S)
+            m._df['S']= -1  # create a new column for S
+            #for i in G.nodes:
+             #   m._df['S'][i] = -1
+            for i in G.nodes:
+                #m._df['label'][i] = i
+                if i in S:
+                    geoID = G.node[i]["GEOID10"]
+                    for u in G.nodes:
+                        if geoID == m._df['GEOID10'][u]:
+                            m._df['S'][u] = 0
+                    #m._df['S'][i] = 0
+                    #colors.append('white')
+                else:
+                    #print("non_S: ", i)
+                    geoID = G.node[i]["GEOID10"]
+                    for u in G.nodes:
+                        if geoID == m._df['GEOID10'][u]:
+                            m._df['S'][u] = 1
+                    #m._df['S'][i] = 1
+                    #colors.append('grey')
+            cmap = LinearSegmentedColormap.from_list('S', [(0, 'white'), (1, 'lightgray')])    
+            #colors = ['grey', 'white']  
+            
+            splot = m._df.plot(cmap=cmap, column='S',figsize=(10, 10), linewidth=1, edgecolor='0.25').get_figure()  # display the S map
+            plt.axis('off')
+            if land_parcel == "county":
+                splot.savefig(state+"_S_county.png")
+            elif land_parcel == "tract":
+                splot.savefig(state+"_S_tract.png")
+      
+    else:
+        m._row.append("None")
+        m._row.append("None")
+        ordered_vertices = None
         
         '''
         new_ordering = []
@@ -361,10 +366,10 @@ with open(fn, 'w', newline='') as csvfile:
     
     for state in state_codes.keys():
         #if state == 'UT' or state == 'MS' or state == 'AR' or state == 'NV':
-        if state == 'UT':
+        #if state == 'AL':
         #if state == 'ME' or state == 'LA':
-        #if state == 'NH' or state == 'ID' or state == 'ME' or state == 'WV' or state == 'NM' or state == 'NE':
-        #if state == 'ME' or state == 'LA' or state == 'OK' or state == 'AL' or state == 'NE' or state == 'AR' or state == 'KS' or state == 'IA' or state == 'ID' or state == 'WV' or state == 'NM' or state == 'MS':
+        if state == 'NH' or state == 'ID' or state == 'ME' or state == 'WV' or state == 'NM' or state == 'NE':
+        #if state == 'OK' or state == 'AL' or state == 'NE' or state == 'AR' or state == 'KS' or state == 'IA' or state == 'ID' or state == 'WV' or state == 'NM' or state == 'MS':
             if base == 'hess':
                 for model in hess_models:
                     #row = build_cut_edges(state,base,model,weighted,extended,OrderChoice,all_optima,optima_limit,symmetry) + [model]

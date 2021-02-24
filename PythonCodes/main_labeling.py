@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt
 # Apply active procedures
 ############# 
 def build_base_labeling_model(m, G, population, L, U, k, heur_districts, ordered_vertices, position): 
-    orbitope = True
+    orbitope = False
     ZFixing = True     # fix Z[i,j,v]=0 when X[i,v]=0 fixed
     LFixing = True     # fix X[j,j]=0 if p(R_j)<L, where R_j is the vertices reachable from j in G[V_j], and V_j is vertices that DiagFixing allows
     UFixing = True     # fix X[i,j]=0 if total population 
@@ -124,8 +124,8 @@ def build_base_labeling_model(m, G, population, L, U, k, heur_districts, ordered
     #print ("model: ", m._model)
     #m.params.OutputFlag = 0
     m.params.LogToConsole = 0
-    m.params.LogFile='opt_'+m._state+'_'+m._model+'.log'
-    m.Params.timeLimit=60
+    m.params.LogFile='opt_'+m._state+'_'+m._model+'_default.log'
+    m.Params.timeLimit=3600
     
     if m._model=="shir":
         labeling.build_shir_model(m,DG,k,ordered_vertices,orbitope)
