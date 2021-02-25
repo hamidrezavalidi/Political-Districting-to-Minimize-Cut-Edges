@@ -45,6 +45,7 @@ def do_LFixing(m,G,population,L,ordered_vertices,position):
                     LFixed += 1
         #S[v]=False
     print("Number of LFixings =",LFixed,"out of",G.number_of_nodes()*G.number_of_nodes())
+    m.update()
     return LFixed
 
 def do_UFixing(m,population,U,ordered_vertices,position):
@@ -68,6 +69,7 @@ def do_UFixing(m,population,U,ordered_vertices,position):
         for i in DG.neighbors(j):
             DG[i][j]['weight']=U+1
     print("Number of UFixings =",UFixed,"out of",DG.number_of_nodes()*DG.number_of_nodes())
+    m.update()
     return UFixed
     
 def do_ZFixing(X,Z,G):
@@ -82,6 +84,7 @@ def do_ZFixing(X,Z,G):
 
 def do_labeling_ZFixing(m,G,k):
     ZFixed = 0
+    m.update()
     for i,j in G.edges:
         for v in range(k):
             if m._X[i,v].UB<0.5 or m._X[j,v].LB>0.5:
@@ -115,23 +118,27 @@ def do_labeling_UFixing(m,G,population,U,ordering,k):
     for j in range(k):
         v_j = ordering[j]
         dist = nx.shortest_path_length(DG,source=v_j,weight='weight')
-        min_dist = min(dist)
-        if min_dist+population[v_j] <= U and j!=0: break
+        new_dist = [dist[ordering[i]]  for i in range(j)]
+        min_dist = U+1
+        if new_dist: min_dist = min(new_dist)
+        if min_dist+population[v_j] <= U: break
         m._R[v_j,j].LB=1
         UFixed_R += 1
-        '''
+        
         m._X[v_j,j].LB=1
-        UFixed_X += 1
+        #UFixed_X += 1
         for t in range(k):
             if t != j:
                 m._X[v_j,t].UB=0
-                UFixed_X += 1
+        UFixed_X += k
+        
+        m.update()
         
         for i in ordering:
-            if i!=v_j and i not in m._S:
+            if i!=v_j and m._R[i,j].UB > 0.5:
                 m._R[i,j].UB=0
                 UFixed_R += 1
-        '''
+        
         for i in range(j+1, len(DG.nodes)):
             u = ordering[i]
             if dist[u]+population[v_j]>U:
@@ -139,6 +146,7 @@ def do_labeling_UFixing(m,G,population,U,ordering,k):
                 UFixed_X += 1
         
     print("Number of UFixings =",UFixed_X+UFixed_R,"out of",2*DG.number_of_nodes()*k)
+    m.update()
     return UFixed_X, UFixed_R    
         #m._X[i,district].UB=0
         # fix to one
@@ -219,4 +227,5 @@ def do_labeling_LFixing(m,G,population,L,ordering,k):
             LFixed += 1
 
     print("Number of LFixings =",LFixed,"out of", G.number_of_nodes()*k)
+    m.update()
     return LFixed 
