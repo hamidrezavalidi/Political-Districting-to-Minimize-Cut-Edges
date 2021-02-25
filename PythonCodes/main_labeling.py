@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt
 # Apply active procedures
 ############# 
 def build_base_labeling_model(m, G, population, L, U, k, heur_districts, ordered_vertices, position): 
-    orbitope = False
+    orbitope = True
     ZFixing = True     # fix Z[i,j,v]=0 when X[i,v]=0 fixed
     LFixing = True     # fix X[j,j]=0 if p(R_j)<L, where R_j is the vertices reachable from j in G[V_j], and V_j is vertices that DiagFixing allows
     UFixing = True     # fix X[i,j]=0 if total population 
@@ -44,22 +44,27 @@ def build_base_labeling_model(m, G, population, L, U, k, heur_districts, ordered
      
     labeling.build_labeling_model(m, population, L, U, k)
     
+    
+    R_fixed = 0
+    X_fixed = 0
     # LFixing
     if LFixing:
-        L_fixed = fixing.do_labeling_LFixing(m,G,population,L,ordered_vertices,k)
-    else:
-        L_fixed = 'none'
+        R_fixed = fixing.do_labeling_LFixing(m,G,population,L,ordered_vertices,k)
+    #else:
+     #   R_fixed = 'none'
         
-    m._row.append(L_fixed)    
-    m.update()
+    #m._row.append(R_fixed)    
+    #m.update()
     
     # UFixing
     if UFixing:
-        U_fixed = fixing.do_labeling_UFixing(m,G,population,U,ordered_vertices,k)    
-    else:
-        U_fixed = 'none'
-    
-    m._row.append(U_fixed)
+        Ufixed_X, Ufixed_R = fixing.do_labeling_UFixing(m,G,population,U,ordered_vertices,k)
+        R_fixed += Ufixed_R
+        X_fixed += Ufixed_X
+    #else:
+     #   U_fixed = 'none'
+    m._row.append(R_fixed) 
+    m._row.append(X_fixed)
     m.update()
     
     '''    
@@ -70,7 +75,7 @@ def build_base_labeling_model(m, G, population, L, U, k, heur_districts, ordered
         m.update()
     '''    
     if LFixing and UFixing:
-        XRFixed = L_fixed + U_fixed
+        XRFixed = X_fixed + R_fixed
         m._row += [XRFixed]
         out_of = 2*G.number_of_nodes()*k
         m._row += [out_of]

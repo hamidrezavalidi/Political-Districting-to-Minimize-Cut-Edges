@@ -84,9 +84,13 @@ def do_labeling_ZFixing(m,G,k):
     ZFixed = 0
     for i,j in G.edges:
         for v in range(k):
-            if m._X[i,v].UB<0.5:
+            if m._X[i,v].UB<0.5 or m._X[j,v].LB>0.5:
                 m._Z[i,j,v].UB=0
                 ZFixed += 1
+            elif m._X[i,v].LB>0.5 and m._X[j,v].UB<0.5:
+                m._Z[i,j,v].LB=1
+                ZFixed += 1
+                
     print("Number of ZFixings =",ZFixed,"out of",G.number_of_nodes()*k)
     return ZFixed
      
@@ -102,14 +106,43 @@ def do_DiagFixing(m,G,position):
     return DiagFixed
 
 def do_labeling_UFixing(m,G,population,U,ordering,k):
-    UFixed = 0
+    UFixed_X = 0
+    UFixed_R = 0
     DG = m._DG
     for (i,j) in DG.edges:
         DG[i][j]['weight'] = population[j] # weight of edge (i,j) is population of its head j
     
-    for district in range(k):
-        # fix to one
+    for j in range(k):
+        v_j = ordering[j]
+        dist = nx.shortest_path_length(DG,source=v_j,weight='weight')
+        min_dist = min(dist)
+        if min_dist+population[v_j] <= U and j!=0: break
+        m._R[v_j,j].LB=1
+        UFixed_R += 1
         '''
+        m._X[v_j,j].LB=1
+        UFixed_X += 1
+        for t in range(k):
+            if t != j:
+                m._X[v_j,t].UB=0
+                UFixed_X += 1
+        
+        for i in ordering:
+            if i!=v_j and i not in m._S:
+                m._R[i,j].UB=0
+                UFixed_R += 1
+        '''
+        for i in range(j+1, len(DG.nodes)):
+            u = ordering[i]
+            if dist[u]+population[v_j]>U:
+                m._X[u,j].UB=0
+                UFixed_X += 1
+        
+    print("Number of UFixings =",UFixed_X+UFixed_R,"out of",2*DG.number_of_nodes()*k)
+    return UFixed_X, UFixed_R    
+        #m._X[i,district].UB=0
+        # fix to one
+    '''
         if district == 0:
             m._X[ordering[district],district].LB=1
             UFixed += 1
@@ -124,8 +157,8 @@ def do_labeling_UFixing(m,G,population,U,ordering,k):
                 if counter == district: 
                     m._X[ordering[district],district].LB=1
                     UFixed += 1
-        '''            
-        
+    '''            
+    '''
         # fix to zero
         fix = False
         if district != 0:
@@ -154,9 +187,8 @@ def do_labeling_UFixing(m,G,population,U,ordering,k):
         
         else:
             break
-            
-    print("Number of UFixings =",UFixed,"out of",DG.number_of_nodes()*k)
-    return UFixed 
+    '''    
+      
     '''   
     counter = 0
     j = ordering[counter]

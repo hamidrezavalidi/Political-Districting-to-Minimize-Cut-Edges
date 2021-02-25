@@ -61,7 +61,7 @@ epsg_codes = {
     'VA': '3685', 'WA': '3689', 'WV': '3693', 'WI': '3695', 'WY': '3703',
 }
 
-land_parcel = 'tract'
+land_parcel = 'county'
 
 hess_models = {'lcut'}
 
@@ -107,7 +107,7 @@ all_optima = False   # find all optimal solutions?
 optima_limit = 100   # how many optimal solutions (at most) to obtain?
 
 #symmetry parameter? (recommended for labeling-base formulations)
-symmetry = 2   # options: -1 (automatic), 0 (no symmetry), 1 (conservative), 2 (aggressive)
+symmetry = -1   # options: -1 (automatic), 0 (no symmetry), 1 (conservative), 2 (aggressive)
 
 
 
@@ -359,16 +359,16 @@ with open(fn, 'w', newline='') as csvfile:
     if base == 'hess':
         fields = ['State', 'n', 'm', 'k', 'L', 'U', 'heur', 'heur time', '|S|', 'Order time', 'DiagFixed', 'LFixed', 'UFixed', 'XFixed', 'Total X', 'ZFixed', 'Total Z', '#B&B', 'bound', 'obj', 'MIP time', 'Model']
     elif base == 'labeling':
-        fields = ['State', 'n', 'm', 'k', 'L', 'U', 'heur', 'heur time', '|S|', 'Order time', 'LFixed', 'UFixed', 'X&R Fixed', 'Total X&R', 'ZFixed', 'Total Z', '#B&B', 'bound', 'obj', 'MIP time', 'Model']
+        fields = ['State', 'n', 'm', 'k', 'L', 'U', 'heur', 'heur time', '|S|', 'Order time', 'RFixed', 'XFixed', 'X&R Fixed', 'Total X&R', 'ZFixed', 'Total Z', '#B&B', 'bound', 'obj', 'MIP time', 'Model']
     else:
         print("No correct base! Please enter a valid base (i.e., 'hess' or 'labeling')")
     csvwriter.writerow(fields)
     
     for state in state_codes.keys():
         #if state == 'UT' or state == 'MS' or state == 'AR' or state == 'NV':
-        #if state == 'AL':
+        if state == 'AL':
         #if state == 'ME' or state == 'LA':
-        if state == 'NH' or state == 'ID' or state == 'ME' or state == 'WV' or state == 'NM' or state == 'NE':
+        #if state == 'NH' or state == 'ID' or state == 'ME' or state == 'WV' or state == 'NM' or state == 'NE':
         #if state == 'OK' or state == 'AL' or state == 'NE' or state == 'AR' or state == 'KS' or state == 'IA' or state == 'ID' or state == 'WV' or state == 'NM' or state == 'MS':
             if base == 'hess':
                 for model in hess_models:
