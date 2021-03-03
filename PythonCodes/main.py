@@ -61,15 +61,15 @@ epsg_codes = {
     'VA': '3685', 'WA': '3689', 'WV': '3693', 'WI': '3695', 'WY': '3703',
 }
 
-land_parcel = 'county'
+land_parcel = 'tract'
 
-hess_models = {'lcut'}
+#hess_models = {'lcut'}
 
-#hess_models = {'lcut', 'scf', 'shir'}
+hess_models = {'lcut', 'scf', 'shir'}
 
 #labeling_models = {'mcf', 'shir', 'cut', 'lcut', 'austin_cut', 'austin_lcut'}
 
-labeling_models = {'lcut'}
+labeling_models = {'scf','shir','lcut'}
 
 #labeling_models = {'lcut', 'scf', 'shir', 'labeling'}
 
@@ -83,7 +83,7 @@ def set_edge_lengths(G, weighted):
             G[i][j]['edge_length'] = 1
             
 
-base = "labeling"
+base = "hess"
 # weight of objective coefficients
 weighted = False     # weight the edges based on border lengths
 
@@ -357,16 +357,16 @@ fn += ".csv"
 with open(fn, 'w', newline='') as csvfile:
     csvwriter = csv.writer(csvfile)
     if base == 'hess':
-        fields = ['State', 'n', 'm', 'k', 'L', 'U', 'heur', 'heur time', '|S|', 'Order time', 'DiagFixed', 'LFixed', 'UFixed', 'XFixed', 'Total X', 'ZFixed', 'Total Z', '#B&B', 'bound', 'obj', 'MIP time', 'Model']
+        fields = ['State', 'n', 'm', 'k', 'L', 'U', 'heur', 'heur time', '|B|', 'Order time', 'DiagFixed', 'LFixed', 'UFixed', 'XFixed', 'Total X', 'ZFixed', 'Total Z', '#B&B', 'bound', 'obj', 'MIP time', 'Model']
     elif base == 'labeling':
-        fields = ['State', 'n', 'm', 'k', 'L', 'U', 'heur', 'heur time', '|S|', 'Order time', 'RFixed', 'XFixed', 'X&R Fixed', 'Total X&R', 'ZFixed', 'Total Z', '#B&B', 'bound', 'obj', 'MIP time', 'Model']
+        fields = ['State', 'n', 'm', 'k', 'L', 'U', 'heur', 'heur time', '|B|', 'Order time', 'RFixed', 'XFixed', 'X&R Fixed', 'Total X&R', 'ZFixed', 'Total Z', '#B&B', 'bound', 'obj', 'MIP time', 'Model']
     else:
         print("No correct base! Please enter a valid base (i.e., 'hess' or 'labeling')")
     csvwriter.writerow(fields)
     
     for state in state_codes.keys():
-        #if state == 'UT' or state == 'MS' or state == 'AR' or state == 'NV':
-        if state == 'AL':
+        if state == 'UT' or state == 'MS' or state == 'AR' or state == 'NV':
+        #if state == 'AL':
         #if state == 'ME' or state == 'LA':
         #if state == 'NH' or state == 'ID' or state == 'ME' or state == 'WV' or state == 'NM' or state == 'NE':
         #if state == 'OK' or state == 'AL' or state == 'NE' or state == 'AR' or state == 'KS' or state == 'IA' or state == 'ID' or state == 'WV' or state == 'NM' or state == 'MS':

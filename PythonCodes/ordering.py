@@ -39,7 +39,7 @@ def find_ordering(G, population, L, heur, k, OrderChoice, state, land_parcel):
     elif OrderChoice=="S_decreasing":
         #warm = solve_heur_LFix(G, population, L, state, heur, k)
         #S = solve_maxS_recursive_model(G,population,L,state)
-        S = solve_maxS_recursive_model_tract(G,population,L,k,state,heur,land_parcel)
+        S = solve_maxB(G,population,L,k,state,heur,land_parcel)
         #if land_parcel == "county":
             #S = solve_maxS_recursive_model_county(G,population,L,k,state)
          #   S = solve_maxS_recursive_model_tract(G,population,L,k,state,land_parcel)
@@ -66,7 +66,7 @@ def find_ordering(G, population, L, heur, k, OrderChoice, state, land_parcel):
 def sort_by_second(val):
     return val[1]   
         
-def solve_maxS_recursive_model_tract(G,population,L,k,state,heur,land_parcel):
+def solve_maxB(G,population,L,k,state,heur,land_parcel):
     m = gp.Model()
    
     # Y[i,j]=1 if vertices i and j belong to same component of G[S]
@@ -82,11 +82,12 @@ def solve_maxS_recursive_model_tract(G,population,L,k,state,heur,land_parcel):
         S[i].ub = 1
         
     #Austin's warm_start
-    for node in heur["nodes"]:  
-        i = node["index"]
-        for j in range(k):
-            if j != node["district"]:
-                X[i,j].start = 0.0
+    if heur:
+        for node in heur["nodes"]:  
+            i = node["index"]
+            for j in range(k):
+                if j != node["district"]:
+                    X[i,j].start = 0.0
                 
     
     '''    
