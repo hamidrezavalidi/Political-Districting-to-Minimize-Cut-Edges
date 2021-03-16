@@ -1,5 +1,11 @@
 # Political Districting to Minimize Cut Edges
 
+Python code for the paper "Political districting to minimize cut edges" by Hamidreza Validi and Austin Buchanan.
+
+**********************************************************
+You need to install Gurobi and GerryChain to run the code.
+**********************************************************
+
 We consider a stylized redistricting problem.
 
 The input is graph G=(V,E), integer k, population vector p, and bounds L and U.
