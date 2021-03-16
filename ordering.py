@@ -26,8 +26,9 @@ def find_ordering(order, B, DG, population):
         return [v for v in DG.nodes]
     
 
-def solve_maxB_problem(DG, population, L, k, heuristic):
+def solve_maxB_problem(DG, population, L, k, heuristic_districts):
     m = gp.Model()
+    m.params.LogToConsole = 0 # keep log to a minimum
     q = k
     
     # X[i,j]=1 if vertex i is assigned to bin j
@@ -50,20 +51,19 @@ def solve_maxB_problem(DG, population, L, k, heuristic):
     
     m.Params.MIPFocus = 1 # turn on MIPFocus
     m.Params.timeLimit = 60 # 60-second time limit
-    m.params.LogToConsole = 0 # keep log to a minimum
     
     # suggest a (partial) warm start
-    if heuristic != None:
-        for i in DG.nodes:
-            j = heuristic[i]
+    for district in heuristic_districts:
+        for i in district:
             for t in range(q):
-                if t != j:
+                if t != district:
                     X[i,t].start = 0.0
     
     m.optimize()
     sol = []
     if m.status in { GRB.OPTIMAL, GRB.TIME_LIMIT }:
         sol = [i for i in DG.nodes if B[i].x > 0.5 ]
+        print("max B obj val =",m.objVal)
         
     return sol
 
