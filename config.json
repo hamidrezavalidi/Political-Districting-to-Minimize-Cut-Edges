@@ -1,0 +1,5 @@
+{
+  "run1": {"state": "OK", "level": "county", "base": "hess", "contiguity": "scf", "symmetry": "default", "extended": true, "order": "default", "heuristic": false},
+  "run2": {"state": "KS", "level": "county", "base": "labeling", "contiguity": "scf", "symmetry": "default", "extended": false, "order": "decreasing", "heuristic": true },
+  "run3": {"state": "NE", "level": "county", "base": "labeling", "contiguity": "scf", "symmetry": "orbitope", "extended": false, "order": "B_decreasing", "heuristic": true}
+}
