@@ -27,6 +27,7 @@ def do_Hess_DFixing(m, G, position):
             if position[i] < position[j] and m._X[i,j].UB > 0.5:
                 m._X[i,j].UB = 0
                 DFixings += 1
+    m.update()
     return DFixings
 
 
@@ -40,6 +41,7 @@ def do_Hess_LFixing(m, G, population, L, ordering):
                     m._X[i,j].UB = 0
                     LFixings += 1
         S[j] = False
+    m.update()
     return LFixings
 
 
@@ -53,6 +55,7 @@ def do_Hess_LFixing_without_Contiguity(m, G, population, L, ordering):
                     m._X[i,j].UB = 0
                     LFixings += 1
         remaining_population -= population[j]
+    m.update()
     return LFixings
 
 
@@ -73,6 +76,7 @@ def do_Hess_UFixing(m, DG, population, U, ordering):
         for i in DG.neighbors(j):
             DG[i][j]['ufixweight'] = U+1
 
+    m.update()
     return UFixings
 
 
@@ -83,6 +87,7 @@ def do_Hess_UFixing_without_Contiguity(m, G, population, U):
             if i != j and population[i] + population[j] > U and m._X[i,j].UB > 0.5:
                 m._X[i,j].UB = 0
                 UFixings += 1
+    m.update()
     return UFixings
     
 
@@ -93,6 +98,7 @@ def do_Hess_ZFixing(m, G):
             if m._X[u,j].UB < 0.5 or m._X[v,j].LB > 0.5:
                 m._Z[u,v,j].UB = 0
                 ZFixings += 1
+    m.update()
     return ZFixings
 
 
@@ -104,6 +110,7 @@ def do_Labeling_DFixing(m, G, ordering, k):
             if m._X[i,j].UB > 0.5:
                 m._X[i,j].UB = 0
                 DFixings += 1
+    m.update()
     return DFixings
 
 
@@ -117,6 +124,7 @@ def do_Labeling_ZFixing(m, G, k):
             elif m._X[u,j].LB > 0.5 and m._X[v,j].UB < 0.5:
                 m._Z[u,v,j].LB = 1
                 ZFixings += 1
+    m.update()
     return ZFixings
 
 
@@ -154,6 +162,7 @@ def do_Labeling_LFixing(m, G, population, L, ordering, k):
                 m._R[i,j].UB = 0
                 LFixings += 1
     
+    m.update()
     return LFixings 
 
 
@@ -190,6 +199,7 @@ def do_Labeling_LFixing_without_Contiguity(m, G, population, L, ordering, k):
                 m._R[i,j].UB = 0
                 LFixings += 1
     
+    m.update()
     return LFixings 
 
 
@@ -236,6 +246,7 @@ def do_labeling_UFixing(m, DG, population, U, ordering, k):
                 m._X[i,j].UB = 0
                 UFixings_X += 1
         
+    m.update()
     return UFixings_X, UFixings_R    
 
 
@@ -243,6 +254,7 @@ def do_labeling_UFixing_without_Contiguity():
     # no fixings possible?
     UFixings_X = 0
     UFixings_R = 0
+    m.update()
     return UFixings_X, UFixings_R    
 
 # AUSTIN IS HERE???

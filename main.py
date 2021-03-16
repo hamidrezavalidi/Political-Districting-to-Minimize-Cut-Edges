@@ -92,23 +92,26 @@ for key in batch_configs.keys():
     print("In run",key,"using config",config,end='.')
     for ckey in config.keys():
         if config[ckey] not in available_config[ckey]:
-            sys.exit("Error: the config option",ckey,":",config[ckey],"is not known.")          
+            errormessage = "Error: the config option"+ckey+":"+config[ckey]+"is not known."
+            sys.exit(errormessage)
+    print("")
                    
     # read input data
     state = config['state']
     code = state_codes[state]
     level = config['level']
-    G = Graph.from_json("/data/"+level+"/dual_graphs/"+level+code+".json")
+    G = Graph.from_json("data/"+level+"/dual_graphs/"+level+code+".json")
     DG = nx.DiGraph(G) # bidirected version of G
-    df = gpd.read_file("/data/"+level+"/shape_files/"+state+"_"+level+".shp")      
+    df = gpd.read_file("data/"+level+"/shape_files/"+state+"_"+level+".shp")      
 
     # set parameters
     k = number_of_congressional_districts[state]    
-    population = [G.node[i]["TOTPOP"] for i in G.nodes()]
+    
+    population = [G.nodes[i]['TOTPOP'] for i in G.nodes()]
     deviation = 0.01
     L = math.ceil((1-deviation/2)*sum(population)/k)
     U = math.floor((1+deviation/2)*sum(population)/k)
-    print("L =",L,"U =",U,"k =",k)
+    print("L =",L,", U =",U,", k =",k)
     
     # abort early for trivial or overtly infeasible instances
     maxp = max(population[i] for i in G.nodes)
@@ -119,7 +122,7 @@ for key in batch_configs.keys():
     # read heuristic solution from external file (?)
     heuristic = config['heuristic']
     if heuristic:
-        heuristic_file = open('/data/'+level+"/heuristic/heur_"+state+"_"+level+".json",'r')
+        heuristic_file = open('data/'+level+"/heuristic/heur_"+state+"_"+level+".json",'r')
         heuristic_dict = json.load(heuristic_file)       
         heuristic_districts = [ [node['index'] for node in heuristic_dict['nodes'] if node['district']==j ] for j in range(k) ]
         heuristic_obj = heuristic_dict['obj']
@@ -202,20 +205,22 @@ for key in batch_configs.keys():
             m.Params.lazyConstraints = 1
             m._callback = separation.lcut_separation_generic 
          
-            
+    m.update()
+    
+    
     ############################################
     # Vertex ordering and max B problem 
     ############################################  
         
-    order = config['ordering']
+    order = config['order']
     
     if order == 'B_decreasing':
         B = ordering.solve_maxB_problem(DG, population, L, k, heuristic_districts)
     else:
         B = []
     
-    ordering = ordering.find_ordering(order, B, DG, population)
-    position = ordering.construct_position(ordering)
+    my_ordering = ordering.find_ordering(order, B, DG, population)
+    position = ordering.construct_position(my_ordering)
         
 
     ####################################   
@@ -228,7 +233,7 @@ for key in batch_configs.keys():
         m.Params.symmetry = 2
     elif symmetry == 'orbitope':
         if base == 'labeling':
-            labeling.add_orbitope_extended_formulation(m, G, k, ordering)
+            labeling.add_orbitope_extended_formulation(m, G, k, my_ordering)
         else:
             sys.exit("Error: orbitope only available for labeling base model.")     
             
@@ -241,11 +246,11 @@ for key in batch_configs.keys():
         DFixings = fixing.do_Hess_DFixing(m, G, position)
         
         if contiguity == 'none':
-            LFixings = fixing.do_Hess_LFixing_without_Contiguity(m, G, population, L, ordering)
+            LFixings = fixing.do_Hess_LFixing_without_Contiguity(m, G, population, L, my_ordering)
             UFixings = fixing.do_Hess_UFixing_without_Contiguity(m, G, population, U)
         else:
-            LFixings = fixing.do_Hess_LFixing(m, G, population, L, ordering)
-            UFixings = fixing.do_Hess_UFixing(m, DG, population, U, ordering)         
+            LFixings = fixing.do_Hess_LFixing(m, G, population, L, my_ordering)
+            UFixings = fixing.do_Hess_UFixing(m, DG, population, U, my_ordering)         
         
         if extended:
             ZFixings = fixing.do_Hess_ZFixing(m, G)
@@ -254,14 +259,14 @@ for key in batch_configs.keys():
     
     
     if base == 'labeling':
-        DFixings = fixing.do_Labeling_DFixing(m, G, ordering, k)
+        DFixings = fixing.do_Labeling_DFixing(m, G, my_ordering, k)
         
         if contiguity == 'none':
-            LFixings = fixing.do_Labeling_LFixing_without_Contiguity(m, G, population, L, ordering)
+            LFixings = fixing.do_Labeling_LFixing_without_Contiguity(m, G, population, L, my_ordering)
             (UFixings_X, UFixings_R) = fixing.do_labeling_UFixing_without_Contiguity()
         else:
-            LFixings = fixing.do_Labeling_LFixing(m, G, population, L, ordering, k)
-            (UFixings_X, UFixings_R) = fixing.do_Labeling_UFixing(m, DG, population, U, ordering, k)
+            LFixings = fixing.do_Labeling_LFixing(m, G, population, L, my_ordering, k)
+            (UFixings_X, UFixings_R) = fixing.do_Labeling_UFixing(m, DG, population, U, my_ordering, k)
         
         if extended:
             ZFixings = fixing.do_Labeling_ZFixing(m, G)
