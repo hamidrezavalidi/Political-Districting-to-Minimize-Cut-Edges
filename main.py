@@ -281,7 +281,7 @@ for key in batch_configs.keys():
     if heuristic and base == 'hess':
         for district in heuristic_districts:    
             p = min([position[v] for v in district])
-            j = ordering[p]
+            j = my_ordering[p]
             for i in district:
                 m._X[i,j].start = 1
                     
@@ -292,7 +292,7 @@ for key in batch_configs.keys():
         # what node r will root the new district j? The one with earliest position.
         for j in range(k):
             min_cp = min(center_positions)
-            r = ordering[min_cp]
+            r = my_ordering[min_cp]
             old_j = cplabel[min_cp]
             
             for i in heuristic_districts[old_j]:

@@ -143,8 +143,10 @@ def do_Labeling_LFixing(m, G, population, L, ordering, k):
             break
     
     # none of the vertices at back (in B) can root a district. 
-    for j in range(q,n):
-        for i in G.nodes:
+    print("q=",q)
+    for p in range(q,n):
+        i = ordering[p]
+        for j in range(k):
             if m._R[i,j].UB > 0.5:
                 m._R[i,j].UB = 0
                 LFixings += 1
@@ -203,7 +205,7 @@ def do_Labeling_LFixing_without_Contiguity(m, G, population, L, ordering, k):
     return LFixings 
 
 
-def do_labeling_UFixing(m, DG, population, U, ordering, k):
+def do_Labeling_UFixing(m, DG, population, U, ordering, k):
     UFixings_X = 0
     UFixings_R = 0
     DG = m._DG
