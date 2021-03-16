@@ -2,9 +2,9 @@
 
 Python code for the paper "Political districting to minimize cut edges" by Hamidreza Validi and Austin Buchanan.
 
-==========================================================
+**********************************************************
 You need to install Gurobi and GerryChain to run the code.
-==========================================================
+**********************************************************
 
 We consider a stylized redistricting problem.
 
