@@ -2,10 +2,6 @@
 
 Python code for the paper "Political districting to minimize cut edges" by Hamidreza Validi and Austin Buchanan.
 
-**********************************************************
-You need to install Gurobi and GerryChain to run the code.
-**********************************************************
-
 We consider a stylized redistricting problem.
 
 The input is graph G=(V,E), integer k, population vector p, and bounds L and U.
@@ -16,6 +12,8 @@ The task is to find a partition of V into k subsets V_1, V_2, ..., V_k such that
 3. the number of edges between partitions is minimized.
 
 For this problem, we consider multiple mixed integer programming (MIP) formulations. We solve them with the Gurobi solver. The code uses lots of "tricks" to speed up the computations (e.g., strong extended formulation for cut edges objective, symmetry handling techniques, safe variable fixing rules, different approaches for imposing contiguity constraints, heuristic warm start with GerryChain, etc).
+
+To run the code, you will need installations of [Gurobi](https://www.gurobi.com/) and [GerryChain](https://gerrychain.readthedocs.io/en/latest/).
 
 The input data is duplicated from Daryl DeFord's website: 
 https://people.csail.mit.edu/ddeford/dual_graphs.html
