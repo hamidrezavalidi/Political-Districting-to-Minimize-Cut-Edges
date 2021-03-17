@@ -82,6 +82,7 @@ available_config = {
 # read configs file and load into a Python dictionary
 configs_file = open('config.json','r')
 batch_configs = json.load(configs_file)
+configs_file.close()
 
 
 # run experiment for each config in batch_config file
@@ -262,7 +263,10 @@ for key in batch_configs.keys():
         DFixings = fixing.do_Labeling_DFixing(m, G, my_ordering, k)
         
         if contiguity == 'none':
-            LFixings = fixing.do_Labeling_LFixing_without_Contiguity(m, G, population, L, my_ordering, k)
+            if symmetry == 'orbitope':
+                LFixings = fixing.do_Labeling_LFixing_without_Contiguity(m, G, population, L, my_ordering, k)
+            else:
+                LFixings = 0
             (UFixings_X, UFixings_R) = fixing.do_labeling_UFixing_without_Contiguity()
         else:
             LFixings = fixing.do_Labeling_LFixing(m, G, population, L, my_ordering, k)
