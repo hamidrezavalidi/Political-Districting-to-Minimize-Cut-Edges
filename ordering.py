@@ -1,5 +1,6 @@
 import gurobipy as gp
 from gurobipy import GRB 
+import time
 
 def sort_by_second(val):
     return val[1]
@@ -50,7 +51,8 @@ def solve_maxB_problem(DG, population, L, k, heuristic_districts):
     m.setObjective( gp.quicksum( B[i] for i in DG.nodes), GRB.MAXIMIZE )
     
     m.Params.MIPFocus = 1 # turn on MIPFocus
-    m.Params.timeLimit = 60 # 60-second time limit
+    B_timelimit = 60
+    m.Params.timeLimit = B_timelimit # 60-second time limit
     
     # suggest a (partial) warm start
     if heuristic_districts is not None:
@@ -60,12 +62,19 @@ def solve_maxB_problem(DG, population, L, k, heuristic_districts):
                     if t != district:
                         X[i,t].start = 0.0
     
+    
+    start = time.time()
     m.optimize()
-    sol = []
+    end = time.time()
+    B_time = '{0:.2f}'.format(end-start)
+    
+    
     if m.status in { GRB.OPTIMAL, GRB.TIME_LIMIT }:
-        sol = [i for i in DG.nodes if B[i].x > 0.5 ]
+        B_sol = [i for i in DG.nodes if B[i].x > 0.5 ]
         print("max B obj val =",m.objVal)
+    else:
+        B_sol = list()
         
-    return sol
+    return (B_sol, q, B_time, B_timelimit)  
 
 

@@ -8,6 +8,7 @@ from gurobipy import GRB
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 
+from datetime import date
 import math
 import networkx as nx
 import csv
@@ -23,6 +24,79 @@ import separation
 
 from gerrychain import Graph
 import geopandas as gpd
+
+
+################################################
+# Summarize computational results to csv file
+################################################ 
+
+from csv import DictWriter
+def append_dict_as_row(file_name, dict_of_elem, field_names):
+    # Open file in append mode
+    with open(file_name, 'a+', newline='') as write_obj:
+        # Create a writer object from csv module
+        dict_writer = DictWriter(write_obj, fieldnames=field_names)
+        # Add dictionary as wor in the csv
+        dict_writer.writerow(dict_of_elem)
+        
+        
+################################################
+# Writes districting solution to json file
+################################################ 
+
+def export_to_json(G, districts, filename):
+    with open(filename, 'w') as outfile:
+        soln = {}
+        soln['nodes'] = []
+        for j in range(len(districts)):
+            for i in districts[j]:
+                soln['nodes'].append({
+                        'name': G.nodes[i]["NAME10"],
+                        'index': i,
+                        'district': j
+                        })
+        json.dump(soln, outfile)
+        
+        
+################################################
+# Draws districts and saves to png file
+################################################ 
+
+def export_to_png(G, df, districts, filename):
+    df['assignment'] = -1
+    for j in range(len(districts)):
+        for i in districts[j]:
+            geoID = G.nodes[i]["GEOID10"]
+            for u in G.nodes:
+                if geoID == df['GEOID10'][u]:
+                    df['assignment'][u] = j
+                    
+    my_fig = df.plot(column='assignment').get_figure()
+    RESIZE_FACTOR = 3
+    my_fig.set_size_inches(my_fig.get_size_inches()*RESIZE_FACTOR)
+    plt.axis('off')
+    my_fig.savefig(filename)
+
+
+################################################
+# Draws max B set and saves to png file
+################################################ 
+
+def export_B_to_png(G, df, B, filename):
+    
+    df['B'] = -1
+    for i in G.nodes:
+        df['B'][i] = 0
+        
+    for i in B:
+        df['B'][i] = 1
+        
+    my_fig = df.plot(column='B').get_figure()
+    RESIZE_FACTOR = 3
+    my_fig.set_size_inches(my_fig.get_size_inches()*RESIZE_FACTOR)
+    plt.axis('off')
+    my_fig.savefig(filename)
+    
 
 ###########################
 # Hard-coded inputs
@@ -61,7 +135,7 @@ default_config = {
     'extended' : True,
     'order' : 'B_decreasing',
     'heuristic' : True
-    }
+}
 
 available_config = {
     'state' : { key for key in state_codes.keys() },
@@ -72,21 +146,39 @@ available_config = {
     'extended' : {True, False},
     'order' : {'none', 'decreasing', 'B_decreasing'},
     'heuristic' : {True, False}
-    }
+}
 
 
-###########################
+###############################################
 # Read configs/inputs and set parameters
-###########################  
+############################################### 
 
 # read configs file and load into a Python dictionary
 configs_file = open('config.json','r')
 batch_configs = json.load(configs_file)
 configs_file.close()
 
+# print results to csv file
+today = date.today()
+today_string = today.strftime("%Y_%b_%d") # Year_Month_Day, like 2019_Sept_16
+results_filename = "results_" + today_string + ".csv" 
 
-# run experiment for each config in batch_config file
-for key in batch_configs.keys():
+# prepare csv file by writing column headers
+with open(results_filename,'w',newline='') as csvfile:   
+    my_fieldnames = ['run','state','level','base','contiguity','symmetry','extended','order','heuristic'] # configs
+    my_fieldnames += ['k','L','U','n','m'] # params
+    my_fieldnames += ['heur_obj', 'heur_time', 'heur_iter'] # heuristic info
+    my_fieldnames += ['B_q', 'B_size', 'B_time', 'B_timelimit'] # max B info
+    my_fieldnames += ['DFixings', 'LFixings', 'UFixings_X', 'UFixings_R', 'ZFixings'] # fixing info
+    my_fieldnames += ['MIP_obj','MIP_bound','MIP_time', 'MIP_timelimit', 'MIP_status', 'MIP_nodes'] # MIP info
+    writer = csv.DictWriter(csvfile, fieldnames = my_fieldnames)
+    writer.writeheader()
+    
+############################################################
+# Run experiments for each config in batch_config file
+############################################################
+
+for key in batch_configs.keys(): 
       
     # get config and check for errors
     config = batch_configs[key]
@@ -96,6 +188,16 @@ for key in batch_configs.keys():
             errormessage = "Error: the config option"+ckey+":"+config[ckey]+"is not known."
             sys.exit(errormessage)
     print("")
+    
+    # fill-in unspecified configs using default values
+    for ckey in available_config.keys():
+        if ckey not in config.keys():
+            print("Using default value",ckey,"=",default_config[ckey],"since no option was selected.")
+            config[ckey] = default_config[ckey]
+        
+    # initialize dictionary to store this run's results
+    result = config
+    result['run'] = key            
                    
     # read input data
     state = config['state']
@@ -113,6 +215,11 @@ for key in batch_configs.keys():
     L = math.ceil((1-deviation/2)*sum(population)/k)
     U = math.floor((1+deviation/2)*sum(population)/k)
     print("L =",L,", U =",U,", k =",k)
+    result['k'] = k
+    result['L'] = L
+    result['U'] = U
+    result['n'] = G.number_of_nodes()
+    result['m'] = G.number_of_edges()
     
     # abort early for trivial or overtly infeasible instances
     maxp = max(population[i] for i in G.nodes)
@@ -126,14 +233,14 @@ for key in batch_configs.keys():
         heuristic_file = open('data/'+level+"/heuristic/heur_"+state+"_"+level+".json",'r')
         heuristic_dict = json.load(heuristic_file)       
         heuristic_districts = [ [node['index'] for node in heuristic_dict['nodes'] if node['district']==j ] for j in range(k) ]
-        heuristic_obj = heuristic_dict['obj']
-        heuristic_time = heuristic_dict['time']
-        heuristic_iterations = heuristic_dict['iterations']
+        result['heur_obj'] = heuristic_dict['obj']
+        result['heur_time'] = heuristic_dict['time']
+        result['heur_iter'] = heuristic_dict['iterations']
     else:
         heuristic_districts = None
-        heuristic_obj = None
-        heuristic_time = None
-        heuristic_iterations = None
+        result['heur_obj'] = 'n/a'
+        result['heur_time'] = 'n/a'
+        result['heur_iter'] = 'n/a'
         
            
     ############################
@@ -216,12 +323,18 @@ for key in batch_configs.keys():
     order = config['order']
     
     if order == 'B_decreasing':
-        B = ordering.solve_maxB_problem(DG, population, L, k, heuristic_districts)
+        (B, result['B_q'], result['B_time'], result['B_timelimit']) = ordering.solve_maxB_problem(DG, population, L, k, heuristic_districts)
+        
+        # draw set B on map and save
+        fn_B = result['state'] + "-" + result['level'] + "-maxB.png"       
+        export_B_to_png(G, df, B, fn_B)
     else:
-        B = []
+        (B, result['B_q'], result['B_time'], result['B_timelimit']) = (list(),'n/a','n/a', 'n/a')
+        
+    result['B_size'] = len(B)
     
-    my_ordering = ordering.find_ordering(order, B, DG, population)
-    position = ordering.construct_position(my_ordering)
+    vertex_ordering = ordering.find_ordering(order, B, DG, population)
+    position = ordering.construct_position(vertex_ordering)
         
 
     ####################################   
@@ -234,7 +347,7 @@ for key in batch_configs.keys():
         m.Params.symmetry = 2
     elif symmetry == 'orbitope':
         if base == 'labeling':
-            labeling.add_orbitope_extended_formulation(m, G, k, my_ordering)
+            labeling.add_orbitope_extended_formulation(m, G, k, vertex_ordering)
         else:
             sys.exit("Error: orbitope only available for labeling base model.")     
             
@@ -244,38 +357,39 @@ for key in batch_configs.keys():
     ####################################    
     
     if base == 'hess':
-        DFixings = fixing.do_Hess_DFixing(m, G, position)
+        result['DFixings'] = fixing.do_Hess_DFixing(m, G, position)
+        result['UFixings_R'] = 'n/a'
         
         if contiguity == 'none':
-            LFixings = fixing.do_Hess_LFixing_without_Contiguity(m, G, population, L, my_ordering)
-            UFixings = fixing.do_Hess_UFixing_without_Contiguity(m, G, population, U)
+            result['LFixings'] = fixing.do_Hess_LFixing_without_Contiguity(m, G, population, L, vertex_ordering)
+            result['UFixings_X'] = fixing.do_Hess_UFixing_without_Contiguity(m, G, population, U)
         else:
-            LFixings = fixing.do_Hess_LFixing(m, G, population, L, my_ordering)
-            UFixings = fixing.do_Hess_UFixing(m, DG, population, U, my_ordering)         
+            result['LFixings'] = fixing.do_Hess_LFixing(m, G, population, L, vertex_ordering)
+            result['UFixings_X'] = fixing.do_Hess_UFixing(m, DG, population, U, vertex_ordering)         
         
         if extended:
-            ZFixings = fixing.do_Hess_ZFixing(m, G)
+            result['ZFixings'] = fixing.do_Hess_ZFixing(m, G)
         else:
-            ZFixings = 0
+            result['ZFixings'] = 0
     
     
     if base == 'labeling':
-        DFixings = fixing.do_Labeling_DFixing(m, G, my_ordering, k)
+        result['DFixings'] = fixing.do_Labeling_DFixing(m, G, vertex_ordering, k)
         
         if contiguity == 'none':
             if symmetry == 'orbitope':
-                LFixings = fixing.do_Labeling_LFixing_without_Contiguity(m, G, population, L, my_ordering, k)
+                result['LFixings'] = fixing.do_Labeling_LFixing_without_Contiguity(m, G, population, L, vertex_ordering, k)
             else:
-                LFixings = 0
-            (UFixings_X, UFixings_R) = fixing.do_labeling_UFixing_without_Contiguity()
+                result['LFixings'] = 0
+            (result['UFixings_X'], result['UFixings_R']) = fixing.do_labeling_UFixing_without_Contiguity()
         else:
-            LFixings = fixing.do_Labeling_LFixing(m, G, population, L, my_ordering, k)
-            (UFixings_X, UFixings_R) = fixing.do_Labeling_UFixing(m, DG, population, U, my_ordering, k)
+            result['LFixings'] = fixing.do_Labeling_LFixing(m, G, population, L, vertex_ordering, k)
+            (result['UFixings_X'], result['UFixings_R']) = fixing.do_Labeling_UFixing(m, DG, population, U, vertex_ordering, k)
         
         if extended:
-            ZFixings = fixing.do_Labeling_ZFixing(m, G, k)
+            result['ZFixings'] = fixing.do_Labeling_ZFixing(m, G, k)
         else:
-            ZFixings = 0
+            result['ZFixings'] = 0
     
     
     ####################################   
@@ -285,7 +399,7 @@ for key in batch_configs.keys():
     if heuristic and base == 'hess':
         for district in heuristic_districts:    
             p = min([position[v] for v in district])
-            j = my_ordering[p]
+            j = vertex_ordering[p]
             for i in district:
                 m._X[i,j].start = 1
                     
@@ -296,7 +410,7 @@ for key in batch_configs.keys():
         # what node r will root the new district j? The one with earliest position.
         for j in range(k):
             min_cp = min(center_positions)
-            r = my_ordering[min_cp]
+            r = vertex_ordering[min_cp]
             old_j = cplabel[min_cp]
             
             for i in heuristic_districts[old_j]:
@@ -309,65 +423,44 @@ for key in batch_configs.keys():
     # Solve MIP
     ####################################  
     
+    result['MIP_timelimit'] = 3600 # set a one hour time limit
+    m.params.TimeLimit = result['MIP_timelimit']
+    m.Params.Method = 3 # use concurrent method for root LP. Useful for degenerate models
+    
+    start = time.time()
     m.optimize(m._callback)
+    end = time.time()
+    result['MIP_time'] = '{0:.2f}'.format(end-start)
     
+    result['MIP_obj'] = int(m.objVal)
+    result['MIP_bound'] = int(m.objBound)
+    result['MIP_status'] = int(m.status)
+    result['MIP_nodes'] = int(m.NodeCount)
     
-    # FIXME : add map pictures and max B pictures
-    
-    # FIXME : add timers
-    
-    # FIXME : report runtime results to file
-    
-    # FIXME : print districting solution to file
-    
-    
-        
-    # ###########################
-    # # Ordering
-    # ###########################    
-    # if OrderChoice!= "None":       
-    #     order_start = time.time()  
-    #     (ordered_vertices,S) = ordering.find_ordering(G, population, L, heur, k, OrderChoice, state, land_parcel)
-    #     position = ordering.construct_position(ordered_vertices)
-    #     order_stop = time.time()    
-        
-    #     m._S = S
-        
-    #     m._row.append(len(S))
-    #     m._row.append(round(order_stop-order_start,2))
-    #     #m._df['color'] = -1
-    #     #m._df['label'] = -1
-    #     #colors = []
-    #     if S!=[]:
-    #         #print("S=",S)
-    #         m._df['S']= -1  # create a new column for S
-    #         #for i in G.nodes:
-    #          #   m._df['S'][i] = -1
-    #         for i in G.nodes:
-    #             #m._df['label'][i] = i
-    #             if i in S:
-    #                 geoID = G.node[i]["GEOID10"]
-    #                 for u in G.nodes:
-    #                     if geoID == m._df['GEOID10'][u]:
-    #                         m._df['S'][u] = 0
-    #                 #m._df['S'][i] = 0
-    #                 #colors.append('white')
-    #             else:
-    #                 #print("non_S: ", i)
-    #                 geoID = G.node[i]["GEOID10"]
-    #                 for u in G.nodes:
-    #                     if geoID == m._df['GEOID10'][u]:
-    #                         m._df['S'][u] = 1
-    #                 #m._df['S'][i] = 1
-    #                 #colors.append('grey')
-    #         cmap = LinearSegmentedColormap.from_list('S', [(0, 'white'), (1, 'lightgray')])    
-    #         #colors = ['grey', 'white']  
+    # report best solution found
+    if m.SolCount > 0:
+        if base == 'hess':
+            labels = [ j for j in DG.nodes if m._X[j,j].x > 0.5 ]
+        else: # base == 'labeling'
+            labels = [ j for j in range(k) ]
             
-    #         splot = m._df.plot(cmap=cmap, column='S',figsize=(10, 10), linewidth=1, edgecolor='0.25').get_figure()  # display the S map
-    #         plt.axis('off')
-    #         if land_parcel == "county":
-    #             splot.savefig(state+"_S_county.png")
-    #         elif land_parcel == "tract":
-    #             splot.savefig(state+"_S_tract.png")
-      
-
+        districts = [ [ i for i in DG.nodes if m._X[i,j].x > 0.5 ] for j in labels]
+        print("best solution (found) =",districts)
+        
+        fn = result['state'] + "-" + result['level'] + "-" + result['base'] + "-" + result['contiguity']
+        
+        # export solution to .json file
+        json_fn = fn + ".json"
+        export_to_json(G, districts, json_fn)
+        
+        # export solution to .png file (districting map)
+        png_fn = fn + ".png"
+        export_to_png(G, df, districts, png_fn)
+        
+            
+    ####################################   
+    # Summarize results of this run to csv file
+    ####################################  
+    
+    append_dict_as_row(results_filename,result,my_fieldnames)
+    

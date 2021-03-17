@@ -1,6 +1,5 @@
 {
-  "run1": {"state": "OK", "level": "county", "base": "hess", "contiguity": "none", "symmetry": "default", "extended": true, "order": "decreasing", "heuristic": false},
-  "run2": {"state": "OK", "level": "county", "base": "hess", "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true},
+  "run1": {"state": "OK", "level": "county", "base": "hess", "contiguity": "none", "symmetry": "default", "extended": true, "order": "decreasing", "heuristic": false},       "run2": {"state": "OK", "level": "county", "base": "hess", "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true},
   "run3": {"state": "OK", "level": "county", "base": "hess", "contiguity": "shir", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true},
   "run4": {"state": "OK", "level": "county", "base": "hess", "contiguity": "lcut", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true},
   "run5": {"state": "OK", "level": "county", "base": "labeling", "contiguity": "none", "symmetry": "default", "extended": true, "order": "decreasing", "heuristic": false},
