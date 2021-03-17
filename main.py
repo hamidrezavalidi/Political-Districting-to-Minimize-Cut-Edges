@@ -262,7 +262,7 @@ for key in batch_configs.keys():
         DFixings = fixing.do_Labeling_DFixing(m, G, my_ordering, k)
         
         if contiguity == 'none':
-            LFixings = fixing.do_Labeling_LFixing_without_Contiguity(m, G, population, L, my_ordering)
+            LFixings = fixing.do_Labeling_LFixing_without_Contiguity(m, G, population, L, my_ordering, k)
             (UFixings_X, UFixings_R) = fixing.do_labeling_UFixing_without_Contiguity()
         else:
             LFixings = fixing.do_Labeling_LFixing(m, G, population, L, my_ordering, k)
