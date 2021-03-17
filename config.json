@@ -1,5 +1,14 @@
 {
-  "run1": {"state": "OK", "level": "county", "base": "hess", "contiguity": "scf", "symmetry": "default", "extended": true, "order": "none", "heuristic": false},
-  "run2": {"state": "KS", "level": "county", "base": "labeling", "contiguity": "scf", "symmetry": "default", "extended": false, "order": "decreasing", "heuristic": true },
-  "run3": {"state": "NE", "level": "county", "base": "labeling", "contiguity": "scf", "symmetry": "orbitope", "extended": false, "order": "B_decreasing", "heuristic": true}
+  "run1": {"state": "OK", "level": "county", "base": "hess", "contiguity": "none", "symmetry": "default", "extended": true, "order": "decreasing", "heuristic": false},
+  "run2": {"state": "OK", "level": "county", "base": "hess", "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true},
+  "run3": {"state": "OK", "level": "county", "base": "hess", "contiguity": "shir", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true},
+  "run4": {"state": "OK", "level": "county", "base": "hess", "contiguity": "lcut", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true},
+  "run5": {"state": "OK", "level": "county", "base": "labeling", "contiguity": "none", "symmetry": "default", "extended": true, "order": "decreasing", "heuristic": false},
+  "run6": {"state": "OK", "level": "county", "base": "labeling", "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true},
+  "run7": {"state": "OK", "level": "county", "base": "labeling", "contiguity": "shir", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true},
+  "run8": {"state": "OK", "level": "county", "base": "labeling", "contiguity": "lcut", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true},
+  "run9": {"state": "OK", "level": "county", "base": "labeling", "contiguity": "none", "symmetry": "orbitope", "extended": true, "order": "B_decreasing", "heuristic": false},
+  "run10": {"state": "OK", "level": "county", "base": "labeling", "contiguity": "scf", "symmetry": "orbitope", "extended": true, "order": "B_decreasing", "heuristic": true},
+  "run11": {"state": "OK", "level": "county", "base": "labeling", "contiguity": "shir", "symmetry": "orbitope", "extended": true, "order": "B_decreasing", "heuristic": true},
+  "run12": {"state": "OK", "level": "county", "base": "labeling", "contiguity": "lcut", "symmetry": "orbitope", "extended": true, "order": "B_decreasing", "heuristic": true}
 }
