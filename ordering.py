@@ -53,11 +53,12 @@ def solve_maxB_problem(DG, population, L, k, heuristic_districts):
     m.Params.timeLimit = 60 # 60-second time limit
     
     # suggest a (partial) warm start
-    for district in heuristic_districts:
-        for i in district:
-            for t in range(q):
-                if t != district:
-                    X[i,t].start = 0.0
+    if heuristic_districts is not None:
+        for district in heuristic_districts:
+            for i in district:
+                for t in range(q):
+                    if t != district:
+                        X[i,t].start = 0.0
     
     m.optimize()
     sol = []
