@@ -256,7 +256,6 @@ def do_labeling_UFixing_without_Contiguity():
     # no fixings possible?
     UFixings_X = 0
     UFixings_R = 0
-    m.update()
     return UFixings_X, UFixings_R    
 
 # AUSTIN IS HERE???
