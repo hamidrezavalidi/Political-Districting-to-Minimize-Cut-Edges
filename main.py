@@ -273,7 +273,7 @@ for key in batch_configs.keys():
             (UFixings_X, UFixings_R) = fixing.do_Labeling_UFixing(m, DG, population, U, my_ordering, k)
         
         if extended:
-            ZFixings = fixing.do_Labeling_ZFixing(m, G)
+            ZFixings = fixing.do_Labeling_ZFixing(m, G, k)
         else:
             ZFixings = 0
     
