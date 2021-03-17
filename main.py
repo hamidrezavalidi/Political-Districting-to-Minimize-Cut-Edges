@@ -152,7 +152,7 @@ for key in batch_configs.keys():
     if base == 'labeling':        
         # X[i,j]=1 if vertex i is assigned to district j in {0,1,2,...,k-1}
         m._X = m.addVars(DG.nodes, range(k), vtype=GRB.BINARY)
-        if config['symmetry']=='orbitope' or config['contiguity'] in {'scf', 'shir'}:
+        if config['symmetry']=='orbitope' or config['contiguity'] in {'scf', 'shir', 'lcut'}:
             m._R = m.addVars(DG.nodes, range(k), vtype=GRB.BINARY)
         labeling.add_base_constraints(m, population, L, U, k)
 
