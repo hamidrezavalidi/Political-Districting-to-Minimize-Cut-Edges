@@ -33,14 +33,14 @@ def add_objective(m, G):
     # Y[i,j] = 1 if edge {i,j} is cut
     m._Y = m.addVars(G.edges, vtype=GRB.BINARY)
     m.addConstrs( m._X[i,v]-m._X[j,v] <= m._Y[i,j] for i,j in G.edges for v in G.nodes)
-    m.setObjective( gp.quicksum(m._Y[i,j] for i,j in G.edges), GRB.MINIMIZE )
+    m.setObjective( gp.quicksum(m._Y), GRB.MINIMIZE )
     
 
 def add_extended_objective(m, G):
     # Z[i,j,v] = 1 if edge (i,j) is cut because i->v but j!->v
     m._Z = m.addVars(G.edges, G.nodes, vtype=GRB.BINARY) 
     m.addConstrs( m._X[i,v]-m._X[j,v] <= m._Z[i,j,v] for i,j in G.edges for v in G.nodes)
-    m.setObjective( gp.quicksum(m._Z[i,j,v] for i,j in G.edges for v in G.nodes), GRB.MINIMIZE )
+    m.setObjective( gp.quicksum(m._Z), GRB.MINIMIZE )
     
     
 def compute_bigM_shir(DG, population, U):
