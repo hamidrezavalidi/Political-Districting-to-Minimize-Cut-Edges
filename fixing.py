@@ -3,14 +3,15 @@ import networkx as nx
 # how many people are reachable from v in G[S]? Uses BFS
 def reachable_population(G, population, S, v):
     pr = 0 # population reached
-    if S[v] == False:
+    if not S[v]:
         return 0
     
     visited = [False for i in G.nodes]
     child = [v]
+    visited[v] = True
     while child:
         parent = child
-        child=[]
+        child = list()
         for i in parent:
             pr += population[i]
             for j in G.neighbors(i):
@@ -34,13 +35,14 @@ def do_Hess_DFixing(m, G, position):
 def do_Hess_LFixing(m, G, population, L, ordering):
     LFixings = 0
     S = [True for v in G.nodes]
-    for j in ordering:
+    for j in ordering:       
         if reachable_population(G, population, S, j) < L:
             for i in G.nodes:
                 if m._X[i,j].UB > 0.5:
                     m._X[i,j].UB = 0
                     LFixings += 1
         S[j] = False
+        
     m.update()
     return LFixings
 

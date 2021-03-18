@@ -6,7 +6,6 @@ import gurobipy as gp
 from gurobipy import GRB 
 
 import matplotlib.pyplot as plt
-from matplotlib.colors import LinearSegmentedColormap
 
 from datetime import date
 import math
