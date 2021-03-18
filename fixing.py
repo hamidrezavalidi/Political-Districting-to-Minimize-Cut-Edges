@@ -14,7 +14,7 @@ def reachable_population(G, population, S, v):
         for i in parent:
             pr += population[i]
             for j in G.neighbors(i):
-                if S[j] == True and visited[j] == False:
+                if S[j] and not visited[j]:
                     child.append(j)
                     visited[j] = True
     return pr   
