@@ -104,7 +104,7 @@ def do_Hess_ZFixing(m, G):
 
 def do_Labeling_DFixing(m, G, ordering, k):
     DFixings = 0
-    for p in range(len(ordering)):
+    for p in range(G.number_of_nodes()):
         i = ordering[p]
         for j in range(p+1,k):
             if m._X[i,j].UB > 0.5:
@@ -258,4 +258,3 @@ def do_labeling_UFixing_without_Contiguity():
     UFixings_R = 0
     return UFixings_X, UFixings_R    
 
-# AUSTIN IS HERE???

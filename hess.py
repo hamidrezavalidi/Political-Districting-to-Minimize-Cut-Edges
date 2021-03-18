@@ -73,8 +73,8 @@ def compute_bigM_shir(DG, population, U):
 def add_shir_constraints(m, population, U):
     DG = m._DG
     # F[j,u,v] tells how much flow (from source j) is sent across arc (u,v)
-    F = m.addVars(DG.nodes,DG.edges,vtype=GRB.CONTINUOUS)
-    M = compute_bigM_shir(DG,population,U)   
+    F = m.addVars( DG.nodes, DG.edges, vtype=GRB.CONTINUOUS)
+    M = compute_bigM_shir(DG, population, U)   
     m.addConstrs( gp.quicksum(F[j,u,j] for u in DG.neighbors(j)) == 0 for j in DG.nodes)
     m.addConstrs( gp.quicksum( F[j,u,i]-F[j,i,u] for u in DG.neighbors(i) ) == m._X[i,j] for i in DG.nodes for j in DG.nodes if i!=j)
     m.addConstrs( gp.quicksum( F[j,u,i] for u in DG.neighbors(i) ) <= M[i][j]*m._X[i,j] for i in DG.nodes for j in DG.nodes if i!=j)
@@ -84,9 +84,9 @@ def add_shir_constraints(m, population, U):
 def add_scf_constraints(m, G, extended):
     DG = m._DG
     # FIXME: big M
-    M = DG.number_of_nodes()-m._k+1
+    M = DG.number_of_nodes() - m._k + 1
     # F[u,v] tells how much flow is sent across arc (u,v)
-    F = m.addVars(DG.edges,vtype=GRB.CONTINUOUS)
+    F = m.addVars( DG.edges, vtype=GRB.CONTINUOUS )
     m.addConstrs( gp.quicksum(m._X[i,j] for i in DG.nodes) == gp.quicksum(F[j,u]-F[u,j] for u in DG.neighbors(j)) + 1 for j in DG.nodes)
     m.addConstrs( gp.quicksum(F[u,j] for u in DG.neighbors(j)) <= M*(1-m._X[j,j]) for j in DG.nodes)
         
@@ -95,8 +95,3 @@ def add_scf_constraints(m, G, extended):
     else:
         m.addConstrs( F[i,j] + F[j,i] <= M*(1 - m._Y[i,j]) for i,j in G.edges)
         
-
-
-
-# AUSTIN IS HERE???
-

@@ -16,14 +16,14 @@ def add_objective(m, G, k):
     # Y[i,j] = 1 if edge {i,j} is cut
     m._Y = m.addVars(G.edges, vtype=GRB.BINARY)
     m.addConstrs( m._X[i,v]-m._X[j,v] <= m._Y[i,j] for i,j in G.edges for v in range(k))
-    m.setObjective( gp.quicksum(m._Y[i,j] for i,j in G.edges), GRB.MINIMIZE )
+    m.setObjective( gp.quicksum(m._Y), GRB.MINIMIZE )
 
     
 def add_extended_objective(m, G, k):
     # Z[i,j,v] = 1 if edge (i,j) is cut because i->v but j!->v
     m._Z = m.addVars(G.edges, range(k), vtype=GRB.BINARY)
     m.addConstrs( m._X[i,v]-m._X[j,v] <= m._Z[i,j,v] for i,j in G.edges for v in range(k))
-    m.setObjective(gp.quicksum(m._Z[i,j,v] for i,j in G.edges for v in range(k)), GRB.MINIMIZE)
+    m.setObjective( gp.quicksum(m._Z), GRB.MINIMIZE)
 
 
 def add_orbitope_extended_formulation(m, G, k, ordering):
@@ -99,5 +99,3 @@ def add_scf_constraints(m, G, k, extended, symmetry):
         m.addConstrs( gp.quicksum(m._R[i,j] for i in DG.nodes)==1 for j in range(k) )
         m.addConstrs( m._R[i,j] <= m._X[i,j] for i in DG.nodes for j in range(k) )    
   
-       
-  # AUSTIN IS HERE???

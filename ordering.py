@@ -48,7 +48,7 @@ def solve_maxB_problem(DG, population, L, k, heuristic_districts):
     m.addConstrs( X[u,j] + B[v] <= 1 + X[v,j] for u,v in DG.edges for j in range(q) )
     
     # objective is to maximize size of set B
-    m.setObjective( gp.quicksum( B[i] for i in DG.nodes), GRB.MAXIMIZE )
+    m.setObjective( gp.quicksum( B ), GRB.MAXIMIZE )
     
     m.Params.MIPFocus = 1 # turn on MIPFocus
     B_timelimit = 60
@@ -56,12 +56,11 @@ def solve_maxB_problem(DG, population, L, k, heuristic_districts):
     
     # suggest a (partial) warm start
     if heuristic_districts is not None:
-        for district in heuristic_districts:
-            for i in district:
+        for j in range(k):
+            for i in heuristic_districts[j]:
                 for t in range(q):
-                    if t != district:
+                    if t != j:
                         X[i,t].start = 0.0
-    
     
     start = time.time()
     m.optimize()
@@ -76,5 +75,4 @@ def solve_maxB_problem(DG, population, L, k, heuristic_districts):
         B_sol = list()
         
     return (B_sol, q, B_time, B_timelimit)  
-
 

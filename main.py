@@ -432,13 +432,14 @@ for key in batch_configs.keys():
     end = time.time()
     result['MIP_time'] = '{0:.2f}'.format(end-start)
     
-    result['MIP_obj'] = int(m.objVal)
-    result['MIP_bound'] = int(m.objBound)
     result['MIP_status'] = int(m.status)
     result['MIP_nodes'] = int(m.NodeCount)
+    result['MIP_bound'] = int(m.objBound)
     
     # report best solution found
     if m.SolCount > 0:
+        result['MIP_obj'] = int(m.objVal)
+
         if base == 'hess':
             labels = [ j for j in DG.nodes if m._X[j,j].x > 0.5 ]
         else: # base == 'labeling'
@@ -456,6 +457,8 @@ for key in batch_configs.keys():
         # export solution to .png file (districting map)
         png_fn = fn + ".png"
         export_to_png(G, df, districts, png_fn)
+    else:
+        result['MIP_obj'] = 'no_solution_found'
         
             
     ####################################   
