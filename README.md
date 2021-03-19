@@ -21,8 +21,10 @@ The shape files used to draw maps are duplicated from [Eugene Lykhovyd's website
 
 You can run the code from command line, like this:
 
-  python main.py config.json
-
+```
+python main.py config.json
+```
+  
 The config file can specify a batch of runs. A particular run might look like this:
 * state: OK
 * level: county
