@@ -13,8 +13,8 @@ The task is to find a partition of V into k subsets V_1, V_2, ..., V_k such that
 
 For this problem, we consider multiple mixed integer programming (MIP) formulations. We solve them with the Gurobi solver. The code uses lots of "tricks" to speed up the computations (e.g., strong extended formulation for cut edges objective, symmetry handling techniques, safe variable fixing rules, different approaches for imposing contiguity constraints, heuristic warm start with GerryChain, etc).
 
-![Figure 1](OK-county-not.png?raw=true "Figure 1--Min cut plan without contiguity")
-![Figure 2](OK-county-contiguous.png?raw=true "Figure 2--Min cut plan with contiguity")
+![Figure 1](OK-county-not.png?raw=true "Min cut plan without contiguity")
+![Figure 2](OK-county-contiguous.png?raw=true "Min cut plan with contiguity")
 
 ## Require
 To run the code, you will need installations of [Gurobi](https://www.gurobi.com/) and [GerryChain](https://gerrychain.readthedocs.io/en/latest/).
@@ -68,12 +68,12 @@ Generally, each run should pick from the following options:
   * Either treat counties or census tracts as indivisible land units
 * base : {hess, labeling} 
   * Hess model uses binary variables x_ij that equal one when vertex i is assigned to the district rooted at vertex j
-  * Labeling model uses binary variables x_ij that equal one when vertex i is assigned to district number j, where j in 1..k
+  * Labeling model uses binary variables x_ij that equal one when vertex i is assigned to district number j, where j in {1, 2, ..., k }
 * contiguity : {none, lcut, scf, shir}
   * none means that contiguity is not imposed
   * LCUT imposes contiguity with length-U a,b-separator inequalities (in branch-and-cut fashion)
   * SCF imposes contiguity with a single-commodity flow model. See [Hojny et al](https://link.springer.com/article/10.1007/s12532-020-00186-3)
-  * SHIR imposes contiguity with a multi-commodity flow model. See [Shirabe2005](https://onlinelibrary.wiley.com/doi/full/10.1111/j.1538-4632.2005.00605.x) and [Shirabe2009](https://journals.sagepub.com/doi/abs/10.1068/b34104) and [Oehrlein and Haunert](http://www.josis.org/index.php/josis/article/viewArticle/379) and [Validi et al.](http://www.optimization-online.org/DB_HTML/2020/01/7582.html).
+  * SHIR imposes contiguity with a multi-commodity flow model. See [Shirabe2005](https://onlinelibrary.wiley.com/doi/full/10.1111/j.1538-4632.2005.00605.x) and [Shirabe2009](https://journals.sagepub.com/doi/abs/10.1068/b34104) and [Oehrlein and Haunert](http://www.josis.org/index.php/josis/article/viewArticle/379) and [Validi et al.](http://www.optimization-online.org/DB_HTML/2020/01/7582.html)
 * symmetry : {default, aggressive, orbitope}
   * Default uses whatever the Gurobi MIP solver does by default
   * Aggressive is a Gurobi setting that seeks to exploit symmetry
