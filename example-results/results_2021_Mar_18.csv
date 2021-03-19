@@ -1,0 +1,13 @@
+run,state,level,base,contiguity,symmetry,extended,order,heuristic,k,L,U,n,m,heur_obj,heur_time,heur_iter,B_q,B_size,B_time,B_timelimit,DFixings,LFixings,UFixings_X,UFixings_R,ZFixings,MIP_obj,MIP_bound,MIP_time,MIP_timelimit,MIP_status,MIP_nodes
+run1,ME,county,hess,scf,default,True,B_decreasing,False,2,660860,667501,16,34,n/a,n/a,n/a,2,13,0.01,60,120,91,0,n/a,449,16,16,0.13,3600,2,165
+run2,NM,county,hess,scf,default,True,B_decreasing,True,3,682962,689824,33,78,17,158.72,10000,3,28,0.12,60,528,406,28,n/a,2259,17,17,0.11,3600,2,1
+run3,ID,county,hess,scf,default,True,B_decreasing,True,2,779873,787709,44,102,10,538.52,10000,2,41,0.02,60,946,861,0,n/a,4186,10,10,0.14,3600,2,1
+run4,WV,county,hess,scf,default,True,B_decreasing,True,3,614577,620752,55,125,23,794.37,10000,3,48,2.82,60,1485,1176,20,n/a,6100,23,23,1.63,3600,2,1287
+run5,LA,county,hess,scf,default,True,B_decreasing,False,6,751785,759339,64,160,n/a,n/a,n/a,6,53,28.48,60,2016,1431,58,n/a,8748,49,49,617.69,3600,2,195102
+run6,AL,county,hess,scf,default,True,B_decreasing,True,7,679406,686233,67,171,55,275.48,10000,7,52,60.03,60,2211,1378,110,n/a,9509,55,55,2117.40,3600,2,329848
+run7,AR,county,hess,scf,default,True,B_decreasing,True,4,725335,732624,75,192,33,420.52,10000,4,64,23.39,60,2775,2080,28,n/a,12535,33,33,34.34,3600,2,14516
+run8,OK,county,hess,scf,default,True,B_decreasing,True,5,746519,754021,77,195,40,379.33,10000,5,64,43.23,60,2926,2080,113,n/a,13004,40,40,8.90,3600,2,2657
+run9,MS,county,hess,scf,default,True,B_decreasing,True,4,738116,745533,82,202,34,546.18,10000,4,69,60.04,60,3321,2415,48,n/a,14276,34,34,144.12,3600,2,47016
+run10,NE,county,hess,scf,default,True,B_decreasing,True,3,605737,611824,93,231,19,278.07,10000,3,86,1.49,60,4278,3741,5,n/a,19900,19,19,2.19,3600,2,302
+run11,IA,county,hess,scf,default,True,B_decreasing,True,4,757781,765396,99,222,33,560.04,10000,4,85,60.02,60,4851,3655,22,n/a,19099,33,33,149.69,3600,2,30169
+run12,KS,county,hess,scf,default,True,B_decreasing,True,4,709714,716845,105,263,32,1281.95,10000,4,95,10.28,60,5460,4560,12,n/a,25121,32,32,13.20,3600,2,2630
