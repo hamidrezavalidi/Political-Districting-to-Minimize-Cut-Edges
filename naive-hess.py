@@ -224,10 +224,10 @@ for key in batch_configs.keys():
     #     X[j,j].BranchPriority=1      
     
     # Do population-based diagonal fixing
-    for i in DG.nodes:
-        for j in DG.nodes:
-            if population[i] > population[j]:
-                X[i,j].UB = 0
+    # for i in DG.nodes:
+    #     for j in DG.nodes:
+    #         if population[i] > population[j]:
+    #             X[i,j].UB = 0
     
     ###################################################################
     # Add contiguity constraints? 

@@ -7,7 +7,7 @@ def add_base_constraints(m, population, L, U, k):
     # Each vertex i assigned to one district
     m.addConstrs(gp.quicksum(m._X[i,j] for j in range(k)) == 1 for i in DG.nodes)
      
-    # Population balance: population assigned to vertex j should be in [L,U]
+    # Population balance: population assigned to district j should be in [L,U]
     m.addConstrs(gp.quicksum(population[i] * m._X[i,j] for i in DG.nodes) <= U for j in range(k))
     m.addConstrs(gp.quicksum(population[i] * m._X[i,j] for i in DG.nodes) >= L for j in range(k)) 
     

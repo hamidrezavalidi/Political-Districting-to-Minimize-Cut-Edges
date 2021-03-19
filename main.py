@@ -136,7 +136,8 @@ default_config = {
     'symmetry' : 'orbitope',
     'extended' : True,
     'order' : 'B_decreasing',
-    'heuristic' : True
+    'heuristic' : True,
+    'lp': True
 }
 
 available_config = {
@@ -147,7 +148,8 @@ available_config = {
     'symmetry' : {'default', 'aggressive', 'orbitope'},  # orbitope only for labeling
     'extended' : {True, False},
     'order' : {'none', 'decreasing', 'B_decreasing'},
-    'heuristic' : {True, False}
+    'heuristic' : {True, False},
+    'lp' : {True, False} # solve and report root LP bound? (in addition to MIP)
 }
 
 
@@ -156,22 +158,35 @@ available_config = {
 ############################################### 
 
 # read configs file and load into a Python dictionary
-configs_file = open('config.json','r')
+
+if len(sys.argv)>1:
+    # name your own config file in command line, like this: 
+    #       python main.py usethisconfig.json
+    # to keep logs of the experiments, redirect to file, like this:
+    #       python main.py usethisconfig.json 1>>log_file.txt 2>>error_file.txt
+    config_filename = sys.argv[1] 
+else:
+    config_filename = 'config.json' # default
+    
+print("Reading config from",config_filename)    
+config_filename_wo_extension = config_filename.rsplit('.',1)[0]
+configs_file = open(config_filename,'r')
 batch_configs = json.load(configs_file)
 configs_file.close()
 
 # print results to csv file
 today = date.today()
 today_string = today.strftime("%Y_%b_%d") # Year_Month_Day, like 2019_Sept_16
-results_filename = "results_" + today_string + ".csv" 
+results_filename = "results_" + config_filename_wo_extension + "_" + today_string + ".csv" 
 
 # prepare csv file by writing column headers
 with open(results_filename,'w',newline='') as csvfile:   
-    my_fieldnames = ['run','state','level','base','contiguity','symmetry','extended','order','heuristic'] # configs
+    my_fieldnames = ['run','state','level','base','contiguity','symmetry','extended','order','heuristic','lp'] # configs
     my_fieldnames += ['k','L','U','n','m'] # params
     my_fieldnames += ['heur_obj', 'heur_time', 'heur_iter'] # heuristic info
     my_fieldnames += ['B_q', 'B_size', 'B_time', 'B_timelimit'] # max B info
     my_fieldnames += ['DFixings', 'LFixings', 'UFixings_X', 'UFixings_R', 'ZFixings'] # fixing info
+    my_fieldnames += ['LP_obj', 'LP_time'] # root LP info
     my_fieldnames += ['MIP_obj','MIP_bound','MIP_time', 'MIP_timelimit', 'MIP_status', 'MIP_nodes'] # MIP info
     writer = csv.DictWriter(csvfile, fieldnames = my_fieldnames)
     writer.writeheader()
@@ -392,6 +407,26 @@ for key in batch_configs.keys():
         else:
             result['ZFixings'] = 0
     
+    ######################################################################################
+    # Solve root LP? Used only for reporting purposes. Not used for MIP solve.
+    ######################################################################################  
+    
+    if config['lp']:
+        r = m.relax() # LP relaxation of MIP model m
+        r.Params.LogToConsole = 0 # keep log to a minimum
+        r.Params.Method = 3 # use concurrent LP solver
+        print("To get the root LP bound, now solving a (separate) LP model.")
+        
+        lp_start = time.time()
+        r.optimize()
+        lp_end = time.time()
+        
+        result['LP_obj'] = r.objVal
+        result['LP_time'] = '{0:.2f}'.format(lp_end - lp_start)
+    else:
+        result['LP_obj'] = 'n/a'
+        result['LP_time'] = 'n/a'
+        
     
     ####################################   
     # Inject heuristic warm start
@@ -425,7 +460,7 @@ for key in batch_configs.keys():
     ####################################  
     
     result['MIP_timelimit'] = 3600 # set a one hour time limit
-    m.params.TimeLimit = result['MIP_timelimit']
+    m.Params.TimeLimit = result['MIP_timelimit']
     m.Params.Method = 3 # use concurrent method for root LP. Useful for degenerate models
     
     start = time.time()
