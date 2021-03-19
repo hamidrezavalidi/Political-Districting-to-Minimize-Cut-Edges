@@ -63,7 +63,7 @@ The config.json file might look like this:
 ## Config options
 Generally, each run should pick from the following options:
 * state : {AL, AK, AZ, AR, CA, ... } 
-  * [See link for list of 2-letter codes](https://en.wikipedia.org/wiki/List_of_U.S._state_and_territory_abbreviations)
+  * [See list of 2-letter codes](https://en.wikipedia.org/wiki/List_of_U.S._state_and_territory_abbreviations)
 * level : {county, tract}
   * Either treat counties or census tracts as indivisible land units
 * base : {hess, labeling} 
