@@ -37,10 +37,13 @@ The config file can specify a batch of runs. A particular run might look like th
 * lp: true
 
 Generally, each run should pick from the following options:
-* state : {AL, AK, AZ, AR, CA, ...} [see link](https://en.wikipedia.org/wiki/List_of_U.S._state_and_territory_abbreviations)
-* level : {county, tract}
-* base : {hess, labeling},
-* contiguity : {none, lcut, scf, shir},
+* state : {AL, AK, AZ, AR, CA, ... } <- [See link](https://en.wikipedia.org/wiki/List_of_U.S._state_and_territory_abbreviations)
+* level : {county, tract} <- Either treat counties or census tracts as indivisible land units
+* base : {hess, labeling} 
+  * Hess model uses binary variables x_ij that equal one when vertex i is assigned to the district rooted at vertex j
+  * Labeling model uses binary variables x_ij that equal one when vertex i is assigned to district number j, where j in 1..k
+* contiguity : {none, lcut, scf, shir}
+  * asdf
 * symmetry : {default, aggressive, orbitope}
 * extended : {True, False}
 * order : {none, decreasing, B_decreasing}
