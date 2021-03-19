@@ -88,7 +88,10 @@ def export_B_to_png(G, df, B, filename):
         df['B'][i] = 0
         
     for i in B:
-        df['B'][i] = 1
+        geoID = G.nodes[i]["GEOID10"]
+        for u in G.nodes:
+            if geoID == df['GEOID10'][u]:
+                df['B'][u] = 1
         
     my_fig = df.plot(column='B').get_figure()
     RESIZE_FACTOR = 3
@@ -207,9 +210,8 @@ for key in batch_configs.keys():
     df = gpd.read_file("data/"+level+"/shape_files/"+state+"_"+level+".shp")      
 
     # set parameters
-    k = number_of_congressional_districts[state]    
-    
-    population = [G.nodes[i]['TOTPOP'] for i in G.nodes()]
+    k = number_of_congressional_districts[state]        
+    population = [G.nodes[i]['TOTPOP'] for i in G.nodes()]    
     deviation = 0.01
     L = math.ceil((1-deviation/2)*sum(population)/k)
     U = math.floor((1+deviation/2)*sum(population)/k)
@@ -433,7 +435,12 @@ for key in batch_configs.keys():
     
     result['MIP_status'] = int(m.status)
     result['MIP_nodes'] = int(m.NodeCount)
-    result['MIP_bound'] = int(m.objBound)
+    result['MIP_bound'] = m.objBound
+    
+    if m.objBound <= G.number_of_edges():
+        result['MIP_bound'] = int(m.objBound)
+    else:
+        result['MIP_bound'] = m.objBound
     
     # report best solution found
     if m.SolCount > 0:
