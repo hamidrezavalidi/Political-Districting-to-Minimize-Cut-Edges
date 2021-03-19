@@ -80,7 +80,7 @@ Generally, each run should pick from the following options:
 * order : {none, decreasing, B_decreasing}
   * If none, the given vertex ordering will be used
   * If decreasing, the vertices will be sorted in terms of decreasing population
-  * If B_decreasing, a vertex subset B in which all components of G[B] have population less than L will be placed at front, followed by remaining vertices in decreasing population
+  * If B_decreasing, a vertex subset B in which all components of G[B] have population less than L will be placed at back, others placed at front by decreasing population
 * heuristic : {True, False}
   * If true, will use a heuristic MIP warm start obtained from [GerryChain](https://gerrychain.readthedocs.io/en/latest/)
 * lp : {True, False} 
