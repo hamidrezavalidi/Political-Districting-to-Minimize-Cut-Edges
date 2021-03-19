@@ -39,10 +39,21 @@ The config file can specify a batch of runs. A particular run might look like th
 * heuristic: true
 * lp: true
 
-This would be stored in the config.json file like this:
+The config.json file might look like this:
 ```
 {
-  "name_of_run": {"state": "OK", "level": "county", "base": "hess", "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true, "lp": true}
+  "run1": {"state": "ME", "level": "county", "base": "hess", "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": false, "lp": true},
+  "run2": {"state": "NM", "level": "county", "base": "hess", "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true, "lp": true},
+  "run3": {"state": "ID", "level": "county", "base": "hess", "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true, "lp": true},
+  "run4": {"state": "WV", "level": "county", "base": "hess", "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true, "lp": true},
+  "run5": {"state": "LA", "level": "county", "base": "hess", "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": false, "lp": true},
+  "run6": {"state": "AL", "level": "county", "base": "hess", "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true, "lp": true},
+  "run7": {"state": "AR", "level": "county", "base": "hess", "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true, "lp": true},
+  "run8": {"state": "OK", "level": "county", "base": "hess", "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true, "lp": true},
+  "run9": {"state": "MS", "level": "county", "base": "hess", "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true, "lp": true},
+  "run10": {"state": "NE", "level": "county", "base": "hess", "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true, "lp": true},
+  "run11": {"state": "IA", "level": "county", "base": "hess", "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true, "lp": true},
+  "run12": {"state": "KS", "level": "county", "base": "hess", "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true, "lp": true}
 }
 ```
 
