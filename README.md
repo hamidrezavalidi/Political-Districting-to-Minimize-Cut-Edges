@@ -39,6 +39,13 @@ The config file can specify a batch of runs. A particular run might look like th
 * heuristic: true
 * lp: true
 
+This would be stored in the config.json file like this:
+```
+{
+  "name_of_run": {"state": "OK", "level": "county", "base": "hess", "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true, "lp": true}
+}
+```
+
 Generally, each run should pick from the following options:
 * state : {AL, AK, AZ, AR, CA, ... } 
   * [See link for list of 2-letter codes](https://en.wikipedia.org/wiki/List_of_U.S._state_and_territory_abbreviations)
@@ -50,7 +57,7 @@ Generally, each run should pick from the following options:
 * contiguity : {none, lcut, scf, shir}
   * none means that contiguity is not imposed
   * LCUT imposes contiguity with length-U a,b-separator inequalities (in branch-and-cut fashion)
-  * SCF imposes contiguity with a single-commodity flow model. See [Hojny et al, 2020](https://link.springer.com/article/10.1007/s12532-020-00186-3)
+  * SCF imposes contiguity with a single-commodity flow model. See [Hojny et al](https://link.springer.com/article/10.1007/s12532-020-00186-3)
   * SHIR imposes contiguity with a multi-commodity flow model. See [Shirabe2005](https://onlinelibrary.wiley.com/doi/full/10.1111/j.1538-4632.2005.00605.x) and [Shirabe2009](https://journals.sagepub.com/doi/abs/10.1068/b34104) and [Oehrlein and Haunert](http://www.josis.org/index.php/josis/article/viewArticle/379) and [Validi et al.](http://www.optimization-online.org/DB_HTML/2020/01/7582.html).
 * symmetry : {default, aggressive, orbitope}
   * Default uses whatever the Gurobi MIP solver does by default
