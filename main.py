@@ -199,7 +199,7 @@ for key in batch_configs.keys():
       
     # get config and check for errors
     config = batch_configs[key]
-    print("In run",key,"using config",config,end='.')
+    print("In run",key,"using config:",config,end='.')
     for ckey in config.keys():
         if config[ckey] not in available_config[ckey]:
             errormessage = "Error: the config option"+ckey+":"+config[ckey]+"is not known."
@@ -318,8 +318,7 @@ for key in batch_configs.keys():
         elif contiguity == 'lcut':
             m.Params.lazyConstraints = 1
             m._callback = separation.lcut_separation_generic
-         
-    # FIXME -- NEED TO CHECK THESE FUNCTIONS:               
+                    
     if base == 'labeling':
         if contiguity == 'shir':
             labeling.add_shir_constraints(m, k, config['symmetry'])
