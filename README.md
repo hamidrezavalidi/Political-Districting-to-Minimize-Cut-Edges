@@ -27,7 +27,7 @@ You can run the code from command line, like this:
 python main.py config.json
 ```
 
-## Config
+## config.json
 The config file can specify a batch of runs. A particular run might look like this:
 * state: OK
 * level: county
@@ -57,6 +57,7 @@ The config.json file might look like this:
 }
 ```
 
+## Config options
 Generally, each run should pick from the following options:
 * state : {AL, AK, AZ, AR, CA, ... } 
   * [See link for list of 2-letter codes](https://en.wikipedia.org/wiki/List_of_U.S._state_and_territory_abbreviations)
