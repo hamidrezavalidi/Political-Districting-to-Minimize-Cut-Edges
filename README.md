@@ -13,6 +13,9 @@ The task is to find a partition of V into k subsets V_1, V_2, ..., V_k such that
 
 For this problem, we consider multiple mixed integer programming (MIP) formulations. We solve them with the Gurobi solver. The code uses lots of "tricks" to speed up the computations (e.g., strong extended formulation for cut edges objective, symmetry handling techniques, safe variable fixing rules, different approaches for imposing contiguity constraints, heuristic warm start with GerryChain, etc).
 
+![Figure 1](OK-county-not.png?raw=true "Figure 1--Min cut plan without contiguity")
+![Figure 2](OK-county-contiguous.png?raw=true "Figure 2--Min cut plan with contiguity")
+
 ## Require
 To run the code, you will need installations of [Gurobi](https://www.gurobi.com/) and [GerryChain](https://gerrychain.readthedocs.io/en/latest/).
 
