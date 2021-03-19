@@ -20,3 +20,30 @@ https://people.csail.mit.edu/ddeford/dual_graphs.html
 
 The shape files used to draw maps are duplicated from Eugene Lykhovyd's website: 
 https://lykhovyd.com/files/public/districting
+
+You can run the code from command line, like this:
+
+  python main.py config.json
+
+The config file can specify a batch of runs. A particular run might look like this:
+* state: OK
+* level: county
+* base: hess
+* contiguity: scf
+* symmetry: default
+* extended: true
+* order: B_decreasing
+* heuristic: true
+* lp: true
+
+Generally, each run should pick from the following options:
+* state : {AL, AK, AZ, AR, CA, ...} [see link](https://en.wikipedia.org/wiki/List_of_U.S._state_and_territory_abbreviations)
+* level : {county, tract}
+* base : {hess, labeling},
+* contiguity : {none, lcut, scf, shir},
+* symmetry : {default, aggressive, orbitope}
+* extended : {True, False}
+* order : {none, decreasing, B_decreasing}
+* heuristic : {True, False}
+* lp : {True, False} 
+
