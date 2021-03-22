@@ -187,7 +187,7 @@ with open(results_filename,'w',newline='') as csvfile:
     my_fieldnames += ['B_q', 'B_size', 'B_time', 'B_timelimit'] # max B info
     my_fieldnames += ['DFixings', 'LFixings', 'UFixings_X', 'UFixings_R', 'ZFixings'] # fixing info
     my_fieldnames += ['LP_obj', 'LP_time'] # root LP info
-    my_fieldnames += ['MIP_obj','MIP_bound','MIP_time', 'MIP_timelimit', 'MIP_status', 'MIP_nodes'] # MIP info
+    my_fieldnames += ['MIP_obj','MIP_bound','MIP_time', 'MIP_timelimit', 'MIP_status', 'MIP_nodes', 'connected'] # MIP info
     writer = csv.DictWriter(csvfile, fieldnames = my_fieldnames)
     writer.writeheader()
     
@@ -312,7 +312,7 @@ for key in batch_configs.keys():
     
     if base == 'hess':
         if contiguity == 'shir':
-            hess.add_shir_constraints(m, population, U)
+            hess.add_shir_constraints(m)
         elif contiguity == 'scf':
             hess.add_scf_constraints(m, G, extended)
         elif contiguity == 'lcut':
@@ -321,9 +321,9 @@ for key in batch_configs.keys():
                     
     if base == 'labeling':
         if contiguity == 'shir':
-            labeling.add_shir_constraints(m, k, config['symmetry'])
+            labeling.add_shir_constraints(m, config['symmetry'])
         elif contiguity == 'scf':
-            labeling.add_scf_constraints(m, G, k, extended, config['symmetry'])
+            labeling.add_scf_constraints(m, G, extended, config['symmetry'])
         elif contiguity == 'lcut':
             m.Params.lazyConstraints = 1
             m._callback = separation.lcut_separation_generic 
@@ -350,7 +350,10 @@ for key in batch_configs.keys():
     
     vertex_ordering = ordering.find_ordering(order, B, DG, population)
     position = ordering.construct_position(vertex_ordering)
-        
+    
+    print("Vertex ordering =", vertex_ordering)  
+    print("Position vector =", position)
+    print("Set B =", B)
 
     ####################################   
     # Symmetry handling
@@ -386,7 +389,7 @@ for key in batch_configs.keys():
             result['ZFixings'] = fixing.do_Hess_ZFixing(m, G)
         else:
             result['ZFixings'] = 0
-    
+                
     
     if base == 'labeling':
         result['DFixings'] = fixing.do_Labeling_DFixing(m, G, vertex_ordering, k)
@@ -405,6 +408,7 @@ for key in batch_configs.keys():
             result['ZFixings'] = fixing.do_Labeling_ZFixing(m, G, k)
         else:
             result['ZFixings'] = 0
+            
     
     ######################################################################################
     # Solve root LP? Used only for reporting purposes. Not used for MIP solve.
@@ -497,8 +501,17 @@ for key in batch_configs.keys():
         # export solution to .png file (districting map)
         png_fn = fn + ".png"
         export_to_png(G, df, districts, png_fn)
+        
+        # is solution connected?
+        connected = True
+        for district in districts:
+            if not nx.is_connected(G.subgraph(district)):
+                connected = False
+        result['connected'] = connected
+        
     else:
         result['MIP_obj'] = 'no_solution_found'
+        result['connected'] = 'n/a'
         
             
     ####################################   
