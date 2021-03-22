@@ -27,7 +27,7 @@ The shape files used to draw maps are duplicated from [Eugene Lykhovyd's website
 You can run the code from command line, like this:
 
 ```
-python main.py config.json
+C:\Cut-Edges\src>python main.py config.json
 ```
 
 ## config.json
