@@ -35,6 +35,7 @@ The config file can specify a batch of runs. A particular run might look like th
 * state: OK
 * level: county
 * base: hess
+* fixing: true
 * contiguity: scf
 * symmetry: default
 * extended: true
@@ -45,18 +46,18 @@ The config file can specify a batch of runs. A particular run might look like th
 The config.json file might look like this:
 ```
 {
-  "run1": {"state": "ME", "level": "county", "base": "hess", "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": false, "lp": true},
-  "run2": {"state": "NM", "level": "county", "base": "hess", "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true, "lp": true},
-  "run3": {"state": "ID", "level": "county", "base": "hess", "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true, "lp": true},
-  "run4": {"state": "WV", "level": "county", "base": "hess", "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true, "lp": true},
-  "run5": {"state": "LA", "level": "county", "base": "hess", "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": false, "lp": true},
-  "run6": {"state": "AL", "level": "county", "base": "hess", "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true, "lp": true},
-  "run7": {"state": "AR", "level": "county", "base": "hess", "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true, "lp": true},
-  "run8": {"state": "OK", "level": "county", "base": "hess", "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true, "lp": true},
-  "run9": {"state": "MS", "level": "county", "base": "hess", "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true, "lp": true},
-  "run10": {"state": "NE", "level": "county", "base": "hess", "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true, "lp": true},
-  "run11": {"state": "IA", "level": "county", "base": "hess", "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true, "lp": true},
-  "run12": {"state": "KS", "level": "county", "base": "hess", "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true, "lp": true}
+  "run1": {"state": "ME", "level": "county", "base": "hess", "fixing": true, "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": false, "lp": true},
+  "run2": {"state": "NM", "level": "county", "base": "hess", "fixing": true, "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true, "lp": true},
+  "run3": {"state": "ID", "level": "county", "base": "hess", "fixing": true, "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true, "lp": true},
+  "run4": {"state": "WV", "level": "county", "base": "hess", "fixing": true, "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true, "lp": true},
+  "run5": {"state": "LA", "level": "county", "base": "hess", "fixing": true, "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": false, "lp": true},
+  "run6": {"state": "AL", "level": "county", "base": "hess", "fixing": true, "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true, "lp": true},
+  "run7": {"state": "AR", "level": "county", "base": "hess", "fixing": true, "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true, "lp": true},
+  "run8": {"state": "OK", "level": "county", "base": "hess", "fixing": true, "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true, "lp": true},
+  "run9": {"state": "MS", "level": "county", "base": "hess", "fixing": true, "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true, "lp": true},
+  "run10": {"state": "NE", "level": "county", "base": "hess", "fixing": true, "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true, "lp": true},
+  "run11": {"state": "IA", "level": "county", "base": "hess", "fixing": true, "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true, "lp": true},
+  "run12": {"state": "KS", "level": "county", "base": "hess", "fixing": true, "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true, "lp": true}
 }
 ```
 
@@ -69,6 +70,8 @@ Generally, each run should pick from the following options:
 * base : {hess, labeling} 
   * Hess model uses binary variables x_ij that equal one when vertex i is assigned to the district rooted at vertex j
   * Labeling model uses binary variables x_ij that equal one when vertex i is assigned to district number j, where j in {1, 2, ..., k }
+* fixing : {True, False}
+  * If true, will apply procedures to (safely) fix some variables to zero or one
 * contiguity : {none, lcut, scf, shir}
   * none means that contiguity is not imposed
   * LCUT imposes contiguity with length-U a,b-separator inequalities (in branch-and-cut fashion)
