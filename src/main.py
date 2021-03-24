@@ -133,6 +133,7 @@ default_config = {
     'state' : 'OK',
     'level' : 'county',
     'base' : 'labeling',
+    'fixing' : True,
     'contiguity' : 'scf',
     'symmetry' : 'orbitope',
     'extended' : True,
@@ -145,6 +146,7 @@ available_config = {
     'state' : { key for key in state_codes.keys() },
     'level' : {'county', 'tract'},
     'base' : {'hess', 'labeling'},
+    'fixing' : {True, False},
     'contiguity' : {'none', 'lcut', 'scf', 'shir'},
     'symmetry' : {'default', 'aggressive', 'orbitope'},  # orbitope only for labeling
     'extended' : {True, False},
@@ -379,7 +381,9 @@ for key in batch_configs.keys():
     # Variable fixing
     ####################################    
     
-    if base == 'hess':
+    do_fixing = config['fixing']
+    
+    if do_fixing and base == 'hess':
         result['DFixings'] = fixing.do_Hess_DFixing(m, G, position)
         result['UFixings_R'] = 'n/a'
         
@@ -396,7 +400,7 @@ for key in batch_configs.keys():
             result['ZFixings'] = 0
                 
     
-    if base == 'labeling':
+    if do_fixing and base == 'labeling':
         result['DFixings'] = fixing.do_Labeling_DFixing(m, G, vertex_ordering, k)
         
         if contiguity == 'none':
@@ -413,6 +417,13 @@ for key in batch_configs.keys():
             result['ZFixings'] = fixing.do_Labeling_ZFixing(m, G, k)
         else:
             result['ZFixings'] = 0
+            
+    if not do_fixing:
+        result['DFixings'] = 0
+        result['UFixings_R'] = 0
+        result['LFixings'] = 0
+        result['UFixings_X'] = 0
+        result['ZFixings'] = 0
             
     
     ######################################################################################
