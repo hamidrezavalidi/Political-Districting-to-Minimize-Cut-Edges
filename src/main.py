@@ -188,7 +188,7 @@ results_filename = "../results_for_" + config_filename_wo_extension + "/results_
 
 # prepare csv file by writing column headers
 with open(results_filename,'w',newline='') as csvfile:   
-    my_fieldnames = ['run','state','level','base','contiguity','symmetry','extended','order','heuristic','lp'] # configs
+    my_fieldnames = ['run','state','level','base','fixing','contiguity','symmetry','extended','order','heuristic','lp'] # configs
     my_fieldnames += ['k','L','U','n','m'] # params
     my_fieldnames += ['heur_obj', 'heur_time', 'heur_iter'] # heuristic info
     my_fieldnames += ['B_q', 'B_size', 'B_time', 'B_timelimit'] # max B info
