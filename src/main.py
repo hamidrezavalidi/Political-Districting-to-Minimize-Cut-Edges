@@ -421,8 +421,9 @@ for key in batch_configs.keys():
     
     if config['lp']:
         r = m.relax() # LP relaxation of MIP model m
-        r.Params.LogToConsole = 0 # keep log to a minimum
+        #r.Params.LogToConsole = 0 # keep log to a minimum
         r.Params.Method = 3 # use concurrent LP solver
+        r.Params.TimeLimit = 3600 # one-hour time limit for solving LP
         print("To get the root LP bound, now solving a (separate) LP model.")
         
         lp_start = time.time()
@@ -479,11 +480,6 @@ for key in batch_configs.keys():
     result['MIP_status'] = int(m.status)
     result['MIP_nodes'] = int(m.NodeCount)
     result['MIP_bound'] = m.objBound
-    
-    if m.objBound <= G.number_of_edges():
-        result['MIP_bound'] = int(m.objBound)
-    else:
-        result['MIP_bound'] = m.objBound
     
     # report best solution found
     if m.SolCount > 0:
