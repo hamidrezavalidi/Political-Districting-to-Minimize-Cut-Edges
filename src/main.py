@@ -441,8 +441,14 @@ for key in batch_configs.keys():
         r.optimize()
         lp_end = time.time()
         
-        result['LP_obj'] = r.objVal
+        if r.status == GRB.OPTIMAL:
+            result['LP_obj'] = '{0:.2f}'.format(r.objVal)
+        elif r.status == GRB.TIME_LIMIT:
+            result['LP_obj'] = 'TL'
+        else:
+            result['LP_obj'] = '?'
         result['LP_time'] = '{0:.2f}'.format(lp_end - lp_start)
+        
     else:
         result['LP_obj'] = 'n/a'
         result['LP_time'] = 'n/a'
