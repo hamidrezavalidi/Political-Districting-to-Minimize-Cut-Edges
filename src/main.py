@@ -194,7 +194,7 @@ with open(results_filename,'w',newline='') as csvfile:
     my_fieldnames += ['B_q', 'B_size', 'B_time', 'B_timelimit'] # max B info
     my_fieldnames += ['DFixings', 'LFixings', 'UFixings_X', 'UFixings_R', 'ZFixings'] # fixing info
     my_fieldnames += ['LP_obj', 'LP_time'] # root LP info
-    my_fieldnames += ['MIP_obj','MIP_bound','MIP_time', 'MIP_timelimit', 'MIP_status', 'MIP_nodes', 'connected'] # MIP info
+    my_fieldnames += ['MIP_obj','MIP_bound','MIP_time', 'MIP_timelimit', 'MIP_status', 'MIP_nodes', 'callbacks', 'lazy_cuts', 'connected'] # MIP info
     writer = csv.DictWriter(csvfile, fieldnames = my_fieldnames)
     writer.writeheader()
     
@@ -316,6 +316,8 @@ for key in batch_configs.keys():
     m._U = U
     m._k = k
     m._base = base
+    m._numLazyCuts = 0
+    m._numCallbacks = 0
     
     if base == 'hess':
         if contiguity == 'shir':
@@ -497,6 +499,8 @@ for key in batch_configs.keys():
     result['MIP_status'] = int(m.status)
     result['MIP_nodes'] = int(m.NodeCount)
     result['MIP_bound'] = m.objBound
+    result['callbacks'] = m._numCallbacks
+    result['lazy_cuts'] = m._numLazyCuts
     
     # report best solution found
     if m.SolCount > 0:

@@ -27,6 +27,7 @@ def find_fischetti_separator(DG, component, a, b):
 
 def lcut_separation_generic(m, where):
     if where == GRB.Callback.MIPSOL:
+        m._numCallbacks += 1
         xval = m.cbGetSolution(m._X)
         DG = m._DG
         U = m._U
@@ -108,5 +109,6 @@ def lcut_separation_generic(m, where):
                     m.cbLazy( m._X[a,b] <= gp.quicksum(m._X[c,b] for c in minC) )    
                 elif base == 'labeling':
                     m.cbLazy( m._X[a,j] + m._X[b,j] <= 1 + gp.quicksum(m._X[c,j] for c in minC) )
+                m._numLazyCuts += 1
 
         
