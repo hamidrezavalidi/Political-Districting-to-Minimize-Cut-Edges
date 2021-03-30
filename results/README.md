@@ -1,3 +1,12 @@
 ## How to reproduce tables?
 
-To create Table 1, run config-table1.json from [config directory](https://github.com/hamidrezavalidi/Political-Districting-to-Minimize-Cut-Edges/tree/master/configs).
+From [config directory](https://github.com/hamidrezavalidi/Political-Districting-to-Minimize-Cut-Edges/tree/master/configs), run: 
+
+* config-table1.json to create Table 1,
+* config-table7.json to create Table 7,
+* config-table8.json to create Table 8,
+* config-table9.json to create Table 9,
+* config-table10.json to create Table 10,
+* config-table11.json to create Table 11, 
+* config-table12.json to create Table 12,
+* config-table8.json to create Table 13.
