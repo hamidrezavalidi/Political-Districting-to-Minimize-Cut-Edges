@@ -56,26 +56,32 @@ def export_to_json(G, districts, filename):
                         'district': j
                         })
         json.dump(soln, outfile)
-        
-        
+               
+
 ################################################
 # Draws districts and saves to png file
 ################################################ 
 
 def export_to_png(G, df, districts, filename):
-    df['assignment'] = -1
+    
+    assignment = [ -1 for u in G.nodes ]
+    
     for j in range(len(districts)):
         for i in districts[j]:
             geoID = G.nodes[i]["GEOID10"]
             for u in G.nodes:
                 if geoID == df['GEOID10'][u]:
-                    df['assignment'][u] = j
-                    
-    my_fig = df.plot(column='assignment').get_figure()
-    RESIZE_FACTOR = 3
-    my_fig.set_size_inches(my_fig.get_size_inches()*RESIZE_FACTOR)
-    plt.axis('off')
-    my_fig.savefig(filename)
+                    assignment[u] = j
+    
+    if min(assignment[v] for v in G.nodes) < 0:
+        print("Error: did not assign all nodes in district map png.")
+    else:
+        df['assignment'] = assignment
+        my_fig = df.plot(column='assignment').get_figure()
+        RESIZE_FACTOR = 3
+        my_fig.set_size_inches(my_fig.get_size_inches()*RESIZE_FACTOR)
+        plt.axis('off')
+        my_fig.savefig(filename)
 
 
 ################################################
