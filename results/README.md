@@ -1,6 +1,6 @@
 ## How to reproduce tables?
 
-From [config directory](https://github.com/hamidrezavalidi/Political-Districting-to-Minimize-Cut-Edges/tree/master/configs), run: 
+From [configs directory](https://github.com/hamidrezavalidi/Political-Districting-to-Minimize-Cut-Edges/tree/master/configs), run: 
 
 * config-table1.json to create Table 1,
 * config-table7.json to create Table 7,
