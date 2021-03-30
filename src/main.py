@@ -84,15 +84,8 @@ def export_to_png(G, df, districts, filename):
 
 def export_B_to_png(G, df, B, filename):
     
-    df['B'] = -1
-    for i in G.nodes:
-        df['B'][i] = 0
-        
-    for i in B:
-        geoID = G.nodes[i]["GEOID10"]
-        for u in G.nodes:
-            if geoID == df['GEOID10'][u]:
-                df['B'][u] = 1
+    B_geoids = [ G.nodes[i]["GEOID10"] for i in B ]
+    df['B'] = [1 if df['GEOID10'][u] in B_geoids else 0 for u in G.nodes]
         
     my_fig = df.plot(column='B').get_figure()
     RESIZE_FACTOR = 3
