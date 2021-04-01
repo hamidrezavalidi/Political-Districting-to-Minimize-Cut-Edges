@@ -3,13 +3,14 @@ from gurobipy import GRB
 
 import networkx as nx
 
-def find_fischetti_separator(DG, component, a, b):
+def find_fischetti_separator(DG, component, b):
     neighbors_component = [False for i in DG.nodes]
     for i in nx.node_boundary(DG, component, None):
         neighbors_component[i] = True
     
     visited = [False for i in DG.nodes]
     child = [b]
+    visited[b] = True
     
     while child:
         parent = child
@@ -73,7 +74,7 @@ def lcut_separation_generic(m, where):
                 a = maxp_vertices[0]  
                     
                 # get minimal a,b-separator
-                C = find_fischetti_separator(DG, component, a, b)
+                C = find_fischetti_separator(DG, component, b)
                 
                 # make it a minimal *length-U* a,b-separator
                 for (u,v) in DG.edges():
@@ -81,27 +82,27 @@ def lcut_separation_generic(m, where):
                     
                 # "remove" C from graph
                 for c in C:
-                    for j in DG.neighbors(c):
-                        DG[c][j]['lcutweight'] = U+1
+                    for node in DG.neighbors(c):
+                        DG[c][node]['lcutweight'] = U+1
                 
                 # is C\{c} a length-U a,b-separator still? If so, remove c from C
                 drop_from_C = []
                 for c in C:
                     
                     # temporarily add c back to graph (i.e., "remove" c from cut C)
-                    for j in DG.neighbors(c):
-                        DG[c][j]['lcutweight'] = population[c]
+                    for node in DG.neighbors(c):
+                        DG[c][node]['lcutweight'] = population[c]
                     
                     # what is distance from a to b in G-C ?
-                    distance_from_a = nx.single_source_dijkstra_path_length(DG, a, cutoff=U, weight='lcutweight')
+                    distance_from_a = nx.single_source_dijkstra_path_length(DG, a, weight='lcutweight')
                     
                     if distance_from_a[b] + population[b] > U:
                         # c was not needed in the cut C. delete c from C
                         drop_from_C.append(c)
                     else:
                         # keep c in C. revert arc weights back to "infinity"
-                        for j in DG.neighbors(c):
-                            DG[c][j]['lcutweight'] = U+1
+                        for node in DG.neighbors(c):
+                            DG[c][node]['lcutweight'] = U+1
                     
                 # add lazy cut
                 minC = [c for c in C if c not in drop_from_C ]
