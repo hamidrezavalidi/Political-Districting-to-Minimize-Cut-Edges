@@ -37,7 +37,7 @@
   "run36": {"state": "ID", "level": "tract", "base": "hess", "fixing": true, "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true, "lp": false},
   "run37": {"state": "ME", "level": "tract", "base": "hess", "fixing": true, "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true, "lp": false},
   "run38": {"state": "WV", "level": "tract", "base": "hess", "fixing": true, "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true, "lp": false},
-  "run39": {"state": "NM", "level": "tract", "base": "hess", "fixing": true, "contiguity": "shir", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true, "lp": false},
+  "run39": {"state": "NM", "level": "tract", "base": "hess", "fixing": true, "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true, "lp": false},
   "run40": {"state": "NE", "level": "tract", "base": "hess", "fixing": true, "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true, "lp": false},
   "run41": {"state": "UT", "level": "tract", "base": "hess", "fixing": true, "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true, "lp": false},
   "run42": {"state": "MS", "level": "tract", "base": "hess", "fixing": true, "contiguity": "scf", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true, "lp": false},
