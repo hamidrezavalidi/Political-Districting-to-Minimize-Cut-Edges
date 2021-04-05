@@ -13,7 +13,6 @@ import time
 import json
 import os
 
-#from gerrychain import (GeographicPartition, Partition, Graph, MarkovChain, proposals, updaters, constraints, accept, Election)
 from gerrychain import (GeographicPartition, Graph, MarkovChain, updaters, constraints, accept)
 from gerrychain.tree import recursive_tree_part
 from gerrychain.proposals import recom
@@ -21,7 +20,6 @@ from functools import partial
 
 import geopandas as gpd
 import matplotlib.pyplot as plt
-#from matplotlib.colors import LinearSegmentedColormap
 
 ###########################
 # Hard-coded inputs
@@ -152,7 +150,6 @@ def run_GerryChain_heuristic(G,population_deviation,k,iterations):
 # create directories for results
 os.mkdir("../heuristic-results")
 for iterations in iteration_options:
-    #path = os.path.join("../heuristic-results/"+str(iterations)+"-iterations/") 
     os.mkdir("../heuristic-results/"+str(iterations)+"-iterations") 
 
 # run all settings
