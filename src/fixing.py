@@ -137,11 +137,12 @@ def do_Labeling_LFixing(m, G, population, L, ordering, k):
     n = G.number_of_nodes()
     S = [False for v in G.nodes]
     for p in range(n):
-        v = n - p - 1
+        v_pos = n - p - 1
+        v = ordering[v_pos]
         S[v] = True
         pr = reachable_population(G, population, S, v)
         if pr >= L:
-            q = p + 1
+            q = v_pos + 1
             break
     
     # none of the vertices at back (in B) can root a district. 
