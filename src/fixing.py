@@ -177,10 +177,11 @@ def do_Labeling_LFixing_without_Contiguity(m, G, population, L, ordering, k):
     n = G.number_of_nodes()
     cumulative_population = 0
     for p in range(n):
-        v = n - p - 1
+        v_pos = n - p - 1
+        v = ordering[v_pos]
         cumulative_population += population[v]
         if cumulative_population >= L:
-            q = p + 1
+            q = v_pos + 1
             break
     
     # none of the vertices at back (in B) can root a district. 
