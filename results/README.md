@@ -10,4 +10,4 @@ From [configs directory](https://github.com/hamidrezavalidi/Political-Districtin
 * config-table11.json to create Table 11, 
 * config-table12.json to create Table 12,
 * config-table13.json to create Table 13,
-* config-table15.json to create Table 15.
+* config-table15-TL-q.json with TL in {60, 3600} and q in {k,2k} to create Table 15.
