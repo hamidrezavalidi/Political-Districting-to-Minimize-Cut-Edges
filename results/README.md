@@ -11,3 +11,5 @@ From [configs directory](https://github.com/hamidrezavalidi/Political-Districtin
 * config-table12.json to create Table 12,
 * config-table13.json to create Table 13,
 * config-table15-TL-q.json with TL in {60, 3600} and q in {k,2k} to create Table 15.
+
+It should be noted that Tables 4 and 6 are inferred from Tables 9 and 13, respectively. Furthermore, Table 14 is inferred from Tables 9 and 13. 
