@@ -9,4 +9,5 @@ From [configs directory](https://github.com/hamidrezavalidi/Political-Districtin
 * config-table10.json to create Table 10,
 * config-table11.json to create Table 11, 
 * config-table12.json to create Table 12,
-* config-table13.json to create Table 13.
+* config-table13.json to create Table 13,
+* config-table15.json to create Table 15.
