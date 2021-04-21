@@ -1,6 +1,6 @@
 # Political Districting to Minimize Cut Edges
 
-Python code for the paper "Political districting to minimize cut edges" by Hamidreza Validi and Austin Buchanan.
+Python code for the [paper](https://github.com/hamidrezavalidi/Political-Districting-to-Minimize-Cut-Edges/blob/master/Political_districting_to_minimize_cut_edges.pdf) "Political districting to minimize cut edges" by Hamidreza Validi and Austin Buchanan.
 
 We consider a stylized redistricting problem.
 
