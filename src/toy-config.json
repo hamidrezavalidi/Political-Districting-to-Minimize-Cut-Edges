@@ -1,3 +1,0 @@
-{
-  "name_of_run": {"state": "OK", "level": "county", "base": "hess", "fixing": true, "contiguity": "none", "symmetry": "default", "extended": true, "order": "B_decreasing", "heuristic": true, "lp": true}
-}
