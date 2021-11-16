@@ -21,6 +21,7 @@ import labeling
 import ordering
 import fixing
 import separation
+import solve_lp
 
 from gerrychain import Graph
 import geopandas as gpd
@@ -301,7 +302,11 @@ for key in batch_configs.keys():
         else:
             hess.add_objective(m, G)
             m._G = G
-            m.Params.lazyConstraints = 1
+            #m.Params.lazyConstraints = 1
+            #m.Params.presolve = 0
+            #m.Params.Cuts = 0
+            #m.Params.threads = 1
+            m.Params.PreCrush = 1
             m._callback = separation.obj_hess_separation
                
     if base == 'labeling':
@@ -310,8 +315,9 @@ for key in batch_configs.keys():
         else:
             labeling.add_objective(m, G, k)
             m._G = G
-            m._k = k
-            m.Params.lazyConstraints = 1
+            #m._k = k
+            #m.Params.CutPasses = 2000000000
+            m.Params.PreCrush = 1
             m._callback = separation.obj_labeling_separation
             
     

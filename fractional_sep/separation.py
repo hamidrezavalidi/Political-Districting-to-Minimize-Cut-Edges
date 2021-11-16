@@ -52,8 +52,17 @@ def obj_hess_separation(m, where):
                 lhs_set.append(j)
                 
         if lhs_val > yval[u,v]:  
-            m.cbLazy( gp.quicksum(m._X[u,j] - m._X[v,j] for j in lhs_set) <= m._Y[u,v] )
+            m.cbCut( gp.quicksum(m._X[u,j] - m._X[v,j] for j in lhs_set), GRB.LESS_EQUAL, m._Y[u,v] )
             m._numLazyCuts += 1
+            
+    nodeCount = m.cbGet(gp.GRB.Callback.MIPNODE_NODCNT)
+    
+    if nodeCount == 0:
+        objValue = 0.0
+        for (u,v) in G.edges:
+            objValue += yval[u,v]
+        print("obj value at node 0: ", objValue)
+            
             
 def obj_labeling_separation(m, where):
     
@@ -80,11 +89,19 @@ def obj_labeling_separation(m, where):
             if xval[u,j] - xval[v,j] > 0:
                 lhs_val += xval[u,j] - xval[v,j]
                 lhs_set.append(j)
+                  
                 
         if lhs_val > yval[u,v]:  
-            m.cbLazy( gp.quicksum(m._X[u,j] - m._X[v,j] for j in lhs_set) <= m._Y[u,v] )
+            m.cbCut( gp.quicksum(m._X[u,j] - m._X[v,j] for j in lhs_set) <= m._Y[u,v] )
             m._numLazyCuts += 1
-        
+            
+    nodeCount = m.cbGet(gp.GRB.Callback.MIPNODE_NODCNT)
+    
+    if nodeCount == 0:
+        objValue = 0.0
+        for (u,v) in G.edges:
+            objValue += yval[u,v]
+        print("obj value at node 0: ", objValue)
 
 
 def lcut_separation_generic(m, where):

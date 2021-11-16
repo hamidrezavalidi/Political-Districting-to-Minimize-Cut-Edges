@@ -1,0 +1,6 @@
+{
+  "run24": {"state": "NM", "level": "county", "base": "hess", "fixing": true, "contiguity": "none", "symmetry": "default", "extended": false, "order": "B_decreasing", "heuristic": true, "lp": false},
+  "run35": {"state": "NH", "level": "tract", "base": "hess", "fixing": true, "contiguity": "none", "symmetry": "default", "extended": false, "order": "B_decreasing", "heuristic": true, "lp": false},
+  "run36": {"state": "ID", "level": "tract", "base": "hess", "fixing": true, "contiguity": "none", "symmetry": "default", "extended": false, "order": "B_decreasing", "heuristic": true, "lp": false},
+  "run42": {"state": "MS", "level": "tract", "base": "hess", "fixing": true, "contiguity": "none", "symmetry": "default", "extended": false, "order": "B_decreasing", "heuristic": true, "lp": false}
+}
