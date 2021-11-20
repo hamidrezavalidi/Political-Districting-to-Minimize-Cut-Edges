@@ -1,0 +1,3 @@
+{
+  "run45": {"state": "ME", "level": "county", "base": "labeling", "fixing": true, "contiguity": "scf", "symmetry": "orbitope", "extended": true, "order": "B_decreasing", "heuristic": false, "lp": false}
+}

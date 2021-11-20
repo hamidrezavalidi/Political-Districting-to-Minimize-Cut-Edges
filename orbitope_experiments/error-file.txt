@@ -1,0 +1,6 @@
+C:\Users\hvalidi\.julia\v0.6\Conda\deps\usr\envs\VRDI\lib\site-packages\networkx\drawing\nx_pylab.py:579: MatplotlibDeprecationWarning: 
+The iterable function was deprecated in Matplotlib 3.1 and will be removed in 3.3. Use np.iterable instead.
+  if not cb.iterable(width):
+C:\Users\hvalidi\.julia\v0.6\Conda\deps\usr\envs\VRDI\lib\site-packages\networkx\drawing\nx_pylab.py:676: MatplotlibDeprecationWarning: 
+The iterable function was deprecated in Matplotlib 3.1 and will be removed in 3.3. Use np.iterable instead.
+  if cb.iterable(node_size):  # many node sizes

@@ -1,0 +1,67 @@
+Reading config from config-table14-ME.json
+In run run45 using config: {'state': 'ME', 'level': 'county', 'base': 'labeling', 'fixing': True, 'contiguity': 'scf', 'symmetry': 'orbitope', 'extended': True, 'order': 'B_decreasing', 'heuristic': False, 'lp': False}.
+L = 660860 , U = 667501 , k = 2
+Academic license - for non-commercial use only - expires 2022-07-09
+Using license file C:\Users\hvalidi\gurobi.lic
+Adding scf constraints ...
+max B obj val = 13.0
+Vertex ordering = [12, 6, 11, 0, 1, 2, 3, 4, 5, 7, 8, 9, 10, 13, 14, 15]
+Position vector = [3, 4, 5, 6, 7, 8, 1, 9, 10, 11, 12, 2, 0, 13, 14, 15]
+Set B = [0, 1, 2, 3, 4, 5, 7, 8, 9, 10, 13, 14, 15]
+Changed value of parameter PreCrush to 1
+   Prev: 0  Min: 0  Max: 1  Default: 0
+Changed value of parameter TimeLimit to 3600.0
+   Prev: inf  Min: 0.0  Max: inf  Default: inf
+Changed value of parameter Method to 3
+   Prev: -1  Min: -1  Max: 5  Default: -1
+Gurobi Optimizer version 9.1.2 build v9.1.2rc0 (win64)
+Thread count: 10 physical cores, 20 logical processors, using up to 20 threads
+Optimize a model with 138 rows, 200 columns and 604 nonzeros
+Model fingerprint: 0x2db9c8b3
+Variable types: 68 continuous, 132 integer (132 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 3e+05]
+  Objective range  [1e+00, 1e+00]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 7e+05]
+Presolve removed 28 rows and 59 columns
+Presolve time: 0.00s
+Presolved: 110 rows, 141 columns, 471 nonzeros
+Variable types: 68 continuous, 73 integer (73 binary)
+
+Root relaxation: objective 2.706980e+00, 37 iterations, 0.00 seconds
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0    2.70698    0   15          -    2.70698      -     -    0s
+     0     0    3.53185    0   18          -    3.53185      -     -    0s
+     0     0    5.00000    0   20          -    5.00000      -     -    0s
+     0     0    5.00000    0   21          -    5.00000      -     -    0s
+     0     0    5.28397    0   22          -    5.28397      -     -    0s
+     0     0    5.28397    0   22          -    5.28397      -     -    0s
+     0     0    6.66462    0   22          -    6.66462      -     -    0s
+     0     2    6.66462    0   22          -    6.66462      -     -    0s
+*  235    61               8      16.0000000    8.37905  47.6%   9.7    0s
+*  324    33               6      15.0000000   10.30537  31.3%   8.9    0s
+
+Cutting planes:
+  Gomory: 1
+  MIR: 4
+  StrongCG: 1
+  Flow cover: 1
+  Zero half: 1
+  RLT: 1
+
+Explored 367 nodes (3120 simplex iterations) in 0.22 seconds
+Thread count was 20 (of 20 available processors)
+
+Solution count 2: 15 16 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 1.500000000000e+01, best bound 1.500000000000e+01, gap 0.0000%
+
+User-callback calls 847, time in user-callback 0.12 sec
+# of orbitope callbacks:  203
+# of orbitope cuts:  0
+best solution (found) = [[2, 4, 5, 12, 13, 14], [0, 1, 3, 6, 7, 8, 9, 10, 11, 15]]
