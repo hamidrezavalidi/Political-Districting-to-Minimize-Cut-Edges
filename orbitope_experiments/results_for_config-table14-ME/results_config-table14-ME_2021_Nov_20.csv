@@ -1,0 +1,2 @@
+run,state,level,base,fixing,contiguity,symmetry,extended,order,heuristic,lp,k,L,U,n,m,heur_obj,heur_time,heur_iter,B_q,B_size,B_time,B_timelimit,DFixings,LFixings,UFixings_X,UFixings_R,ZFixings,LP_obj,LP_time,MIP_obj,MIP_bound,MIP_time,MIP_timelimit,MIP_status,MIP_nodes,callbacks,lazy_cuts,connected
+run45,ME,county,labeling,True,scf,orbitope,True,B_decreasing,False,False,2,660860,667501,16,34,n/a,n/a,n/a,2,13,0.04,60,1,27,1,2,5,n/a,n/a,15,15.0,0.23,3600,2,367,0,0,False
