@@ -44,7 +44,7 @@ def create_orbitope_graph(ordering, k):
 
         OG.add_edge((i,k-1),(ni,k-1))
         
-    nx.draw(OG, pos=node_pos, with_labels=True)
+    #nx.draw(OG, pos=node_pos, with_labels=True)
     
     return OG
 
@@ -157,7 +157,7 @@ def add_shifted_column_inequalities(m, where):
                     #print("B_weight =",B_weight,"=",xbar[next_i,j+1])
                     #print("The bar leader is (",next_i,",",j+1,"), meaning that B =",B)
 
-                    print("The inequality to add is x(B) <= x(S) where B =",B,"and S =",S)
-                    print("It is violated by this much",xbar[next_i,j+1]-S_weight)
+                    #print("The inequality to add is x(B) <= x(S) where B =",B,"and S =",S)
+                    #print("It is violated by this much",xbar[next_i,j+1]-S_weight)
     
     #return

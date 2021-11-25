@@ -27,6 +27,98 @@ def find_fischetti_separator(DG, component, b):
 
 
 def lcut_separation_generic(m, where):
+    if where == gp.GRB.Callback.MIPNODE and m.cbGet(gp.GRB.Callback.MIPNODE_STATUS) == gp.GRB.OPTIMAL and m._symmetry == 'sci':
+            
+        m._numOrbitopeCallbacks += 1
+        
+        #Get current fractional solution
+        xval = m.cbGetNodeRel(m._X)
+        
+        OG = m._orbitope_graph
+        
+        k = m._k
+        
+        ordering = m._ordering
+        
+        n = len(ordering)
+        
+        epsilon = 0.01
+        
+        # Get x(bar_ij) for each leader (i,j).
+        # See Corollary 11 of Kaibel and Pfetsch (MP, 2008).
+        # Or bottom of page 688 of Faenza and Kaibel (MOR, 2009).
+        #
+        xbar = xval.copy()
+        for j in range(k-2,-1,-1):
+            for i in range(n):
+                xbar[i,j] += xbar[i,j+1]
+                
+        position = m._position
+        
+        # Set edge weights. By Faenza and Kaibel (MOR, 2009; pp.688),
+        #   we should set weights of vertical arc into (i,j) to be x_ij.
+        # 
+        for i,j in OG.edges:
+            OG.edges[i,j]['edge_weight'] = 0
+    
+        for p in range(1,n):
+    
+            i = ordering[p]
+            pi = ordering[p-1] # 'previous' i
+    
+            for j in range(k):
+                node = (i,j)
+                pnode = (pi,j)
+                OG.edges[pnode,node]['edge_weight'] = max(0, xval[i,j]) # vertical arc
+                
+        # Now solve shortest path problem for each of the first k vertices along 
+        #   the diagonal of the orbitope graph OG. The paths \Gamma will give
+        #   us the type S vertices along the path S=S(\Gamma). See page 688.
+        
+        for p in range(k):
+        
+            v = ordering[p]
+    
+            path_start = (v,p)
+            (distance,path) = nx.single_source_dijkstra(OG,weight='edge_weight',source=path_start)
+    
+            for node in distance.keys():
+    
+                if node == 't':
+                    continue
+    
+                (i,j) = node
+                my_path = path[node]
+                S = list()
+    
+                for pos in range(len(my_path)):
+    
+                    path_node = my_path[pos]
+                    (path_node_i, path_node_j) = path_node
+    
+                    if path_node == path_start:
+                        S.append(path_node)
+                    else:
+                        prev_path_node = my_path[pos-1]
+                        (prev_i,prev_j) = prev_path_node
+                        if path_node_j == prev_j:
+                            S.append(path_node)
+    
+                pos_i = position[i]
+    
+                if pos_i < n-1 and j < k-1:
+    
+                    next_i = ordering[pos_i+1]
+                    S_weight = sum( xval[myi,myj] for (myi,myj) in S )
+                    
+                    
+    
+                    if xbar[next_i,j+1] - S_weight > epsilon:
+                        #print("S: ", S)
+                        B = [ (next_i,jval) for jval in range(j+1,k) ]
+                        m.cbCut(gp.quicksum(m._X[i_val, j_val] for (i_val, j_val) in B) <= gp.quicksum(m._X[u_val, v_val] for (u_val, v_val) in S))
+                        m._numOrbitopeCuts += 1
+    
     if where == GRB.Callback.MIPSOL:
         m._numCallbacks += 1
         xval = m.cbGetSolution(m._X)

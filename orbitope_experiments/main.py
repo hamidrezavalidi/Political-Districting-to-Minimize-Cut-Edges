@@ -148,7 +148,7 @@ available_config = {
     'base' : {'hess', 'labeling'},
     'fixing' : {True, False},
     'contiguity' : {'none', 'lcut', 'scf', 'shir'},
-    'symmetry' : {'default', 'aggressive', 'orbitope'},  # orbitope only for labeling
+    'symmetry' : {'default', 'aggressive', 'orbitope', 'sci'},  # orbitope and sci only for labeling
     'extended' : {True, False},
     'order' : {'none', 'decreasing', 'B_decreasing'},
     'heuristic' : {True, False},
@@ -311,6 +311,7 @@ for key in batch_configs.keys():
     ####################################      
             
     contiguity = config['contiguity']
+    m._symmetry  = None
     m._callback = None
     m._population = population
     m._U = U
@@ -374,8 +375,11 @@ for key in batch_configs.keys():
         m.Params.symmetry = 2
     elif symmetry == 'orbitope':
         if base == 'labeling':
-            #labeling.add_orbitope_extended_formulation(m, G, k, vertex_ordering)
-            #m._k = k
+            labeling.add_orbitope_extended_formulation(m, G, k, vertex_ordering)
+        else:
+            sys.exit("Error: orbitope only available for labeling base model.")              
+    elif symmetry == 'sci' and contiguity != 'lcut': 
+        if base == 'labeling':
             m._numOrbitopeCuts = 0
             m._numOrbitopeCallbacks = 0
             m._ordering = vertex_ordering
@@ -384,8 +388,18 @@ for key in batch_configs.keys():
             m.Params.PreCrush = 1
             m._callback = sci.add_shifted_column_inequalities
         else:
-            sys.exit("Error: orbitope only available for labeling base model.")     
-            
+            sys.exit("Error: orbitope only available for labeling base model.")      
+    elif symmetry == 'sci' and contiguity == 'lcut': 
+        if base == 'labeling':
+            m._symmetry = 'sci'
+            m._numOrbitopeCuts = 0
+            m._numOrbitopeCallbacks = 0
+            m._ordering = vertex_ordering
+            m._position = position
+            m._orbitope_graph = sci.create_orbitope_graph(vertex_ordering, k)
+            m.Params.PreCrush = 1
+        else:
+            sys.exit("Error: orbitope only available for labeling base model.")        
             
     ####################################   
     # Variable fixing
