@@ -1,3 +1,0 @@
-{
-   "run53": {"state": "MS", "level": "county", "base": "labeling", "fixing": true, "contiguity": "scf", "symmetry": "orbitope", "extended": true, "order": "B_decreasing", "heuristic": true, "lp": false}
-}
