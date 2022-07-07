@@ -94,7 +94,7 @@ def add_scf_constraints(m, G, extended, symmetry):
     f = m.addVars(DG.edges, vtype=GRB.CONTINUOUS)
     
     # compute big-M    
-    M = most_possible_nodes_in_one_district(m._population, m._U) - 1
+    M = most_possible_nodes_in_one_district(m._population, m._U) 
     
     # the following constraints are weaker than some in the orbitope EF
     if symmetry != 'orbitope':
@@ -107,8 +107,8 @@ def add_scf_constraints(m, G, extended, symmetry):
     
     # do not send flow across cut edges
     if extended:
-        m.addConstrs( f[i,j] + f[j,i] <= M*(1 - gp.quicksum( m._Z[i,j,v] for v in range(k) )) for (i,j) in G.edges)
+        m.addConstrs( f[i,j] + f[j,i] <= (M-1)*(1 - gp.quicksum( m._Z[i,j,v] for v in range(k) )) for (i,j) in G.edges)
     else:
-        m.addConstrs( f[i,j] + f[j,i] <= M*(1 - m._Y[i,j]) for (i,j) in G.edges )
+        m.addConstrs( f[i,j] + f[j,i] <= (M-1)*(1 - m._Y[i,j]) for (i,j) in G.edges )
             
       
