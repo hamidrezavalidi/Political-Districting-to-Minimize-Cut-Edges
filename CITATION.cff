@@ -1,0 +1,14 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite it as below."
+authors:
+- family-names: "Validi"
+  given-names: "Hamidreza"
+  orcid: "https://orcid.org/0000-0002-7983-7262"
+- family-names: "Buchanan"
+  given-names: "Austin"
+  orcid: "https://orcid.org/0000-0003-2999-9666"
+title: "Political districting to minimize cut edges"
+version: 0.0.1
+doi: 10.5281/zenodo.6374373
+date-released: 2022-03-21
+url: "https://github.com/hamidrezavalidi/Political-Districting-to-Minimize-Cut-Edges"
